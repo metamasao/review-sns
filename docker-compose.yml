@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: python /social-website/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/social-website
+    ports:
+      - 8000:8000
+    environment:
+      - "DJANGO_SECRET_KEY=2p3)21mos^s=)cyj6r$$85j&)@=)puq35zj96n6(^7j%^x^(@xe"
+      - "DJANGO_DEBUG=True"
+    depends_on:
+      - db
+  db:
+    image: postgres:11
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+
+volumes:
+  postgres_data:
