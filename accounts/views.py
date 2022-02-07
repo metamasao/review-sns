@@ -1,4 +1,6 @@
 from django.views import generic
+
+from .models import CustomUser
 from .forms import CustomUserCreationForm
 
 class SingupView(generic.CreateView):
@@ -7,4 +9,4 @@ class SingupView(generic.CreateView):
 
 
 class UserDetail(generic.TemplateView):
-    template_name='accounts/user_detail.html'
+    template_name = 'accounts/user_detail.html'

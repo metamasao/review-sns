@@ -6,8 +6,7 @@ from django.urls import reverse
 from core.behaviors import UUIDModel, TimeStampModel
 
 
-class CustomUser(AbstractUser, UUIDModel):
-    
+class CustomUser(AbstractUser, UUIDModel):    
     following = models.ManyToManyField(
         'self',
         through='Follow',
@@ -19,8 +18,7 @@ class CustomUser(AbstractUser, UUIDModel):
         return reverse("detail", kwargs={
             'pk': self.pk,
             'username': self.username
-        })
-    
+        })    
 
 
 class FollowManager(models.Manager):
@@ -80,8 +78,7 @@ class EventManager(models.Manager):
         return event
 
 
-class Event(TimeStampModel):
-    
+class Event(TimeStampModel):    
     creator = models.ForeignKey(
         CustomUser,
         related_name='events',
