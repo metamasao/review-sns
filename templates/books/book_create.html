@@ -1,0 +1,39 @@
+{% extends '_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Book Create{% endblock title %}
+
+{% block content %}
+	
+	<div class="card">
+		<form method="post">
+			{% csrf_token %}
+			{{ form|crispy }}
+			<input type="submit" value="本を登録" class="btn btn-primary">
+			<a href="#" class="btn btn-outline-danger book-search">ISBNから調べる</a>
+		</form>
+	</div>
+	<div class="search-result"></div>
+{% endblock content %}
+
+{% block sidebar %}
+	{% for book in recent_books %}
+	<div class="sidebar card">
+		<div class="card-header">{{ book.title }}</div>
+		<div class="card-body">
+			<div class="text-center">
+				<img src="{{ book.image_url }}" alt="None">
+			</div>
+			<p>カテゴリー: <a href="{% url 'books:home' book.category.id %}">{{ book.category }}</a></p>
+		</div>
+		<div class="card-footer">
+			<a href="{{ book.get_absolute_url }}" class="btn btn-outline-danger">詳細</a>
+		</div>
+	</div>
+	{% endfor %}
+{% endblock sidebar %}
+{% block script %}
+	<script src="{% static 'js/utils.js' %}"></script>
+	<script src="{% static 'js/book_create.js' %}"></script>
+{% endblock script %}

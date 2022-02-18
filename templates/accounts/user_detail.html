@@ -1,7 +1,19 @@
 {% extends '_base.html' %}
-
+{% load crispy_forms_tags %}
 {% block title %}User Detail{% endblock title %}
 
 {% block content %}
     <h2>Detail page</h2>
+    {{ customuser.username }}
+    {% if not customuser.profile %}
+        <p>プロフィールを編集してみませんか？</p>
+    {% else %}
+        <p>{{ customuser.profile }}</p>
+    {% endif %}
+    <a href="{% url 'accounts:user_update' customuser.pk %}" class="btn btn-outline-secondary">Update</a>
+    <ul>
+        {% for event in customuser.events.all %}
+        <li>{{ event.event }} <span><a href="{{ event.event_url }}" class="btn btn-outline-info">Detail</a></span></li>
+        {% endfor %}
+    </ul>
 {% endblock content %}

@@ -1,0 +1,21 @@
+body {
+    background-color: #fce2c4;
+}
+
+.navbar {
+    background-color: #fddea5;
+}
+
+.aim {
+    margin: 20px 0px;
+    padding: 20px;
+}
+
+.card {
+    margin: 20px 0px;
+    background-color: #fce2c4;
+}
+
+.book-detail {
+    margin: 20px 20px;
+}

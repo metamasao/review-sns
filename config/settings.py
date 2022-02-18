@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     # Local
     'accounts',
     'review',
+    'books',
 
     # Third party
     'crispy_forms',
@@ -117,12 +118,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+# configuration for staticfiles
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [str(BASE_DIR.joinpath('static')),]
+STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
 
 # customuser config
 AUTH_USER_MODEL = 'accounts.CustomUser'
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'books:home'
+LOGOUT_REDIRECT_URL = 'books:home'
 
 # cripy-forms configurations
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

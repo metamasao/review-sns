@@ -1,24 +1,21 @@
 from django.contrib.auth.models import AbstractUser
-from django.conf import settings
 from django.db import models
-from django.urls import reverse
 
-from core.behaviors import UUIDModel, TimeStampModel
+from core.behaviors import UUIDURLModel, TimeStampModel, AuthorModel
 
 
-class CustomUser(AbstractUser, UUIDModel):    
+class CustomUser(AbstractUser, UUIDURLModel):    
     following = models.ManyToManyField(
         'self',
         through='Follow',
         related_name='followers',
         symmetrical=False
     )
+    profile = models.CharField(blank=True, max_length=255)
 
-    def get_absolute_url(self):
-        return reverse("detail", kwargs={
-            'pk': self.pk,
-            'username': self.username
-        })    
+    @property
+    def url_name(self):
+        return 'accounts:detail'    
 
 
 class FollowManager(models.Manager):
@@ -29,7 +26,7 @@ class FollowManager(models.Manager):
             user_to=user_to
         )
         following.save()
-        Event.objects.create_event(user_from, user_to)
+        Action.objects.create_action(user_from, user_to)
         return following
 
 
@@ -53,9 +50,9 @@ class Follow(TimeStampModel):
         user_to_name = self.user_to.username
         return f'{user_from_name} follows {user_to_name}'
 
-class EventManager(models.Manager):
+class ActionManager(models.Manager):
 
-    def get_event_content(self, user, instance):
+    def get_action_content(self, user, instance):
         content = None
         if isinstance(instance, CustomUser):
             name = instance.username
@@ -65,29 +62,24 @@ class EventManager(models.Manager):
         content = f'{user.username}さんが{name}をいいねしました。'
         return content
 
-    def create_event(self, user, instance):
-        content = self.get_event_content(user, instance)
+    def create_action(self, user, instance):
+        content = self.get_action_content(user, instance)
         instance_url = instance.get_absolute_url()
         
-        event = self.model(
-            creator=user,
-            event=content,
-            event_url=instance_url
+        action = self.model(
+            author=user,
+            action_content=content,
+            action_url=instance_url
         )
-        event.save()
-        return event
+        action.save()
+        return action
 
 
-class Event(TimeStampModel):    
-    creator = models.ForeignKey(
-        CustomUser,
-        related_name='events',
-        on_delete=models.CASCADE
-    )
-    event = models.CharField(max_length=512)
-    event_url = models.URLField()
+class Action(TimeStampModel, AuthorModel):    
+    action_content = models.CharField(max_length=512)
+    action_url = models.URLField()
 
-    objects = EventManager()
+    objects = ActionManager()
 
     def __str__(self):
-        return self.event[:50]
+        return self.action_content
