@@ -23,6 +23,9 @@
 {% endblock content %}
 
 {% block sidebar %}
+	<h3 class="introduction text-end">
+		同じカテゴリーの本
+	</h3>
 	{% for book in same_category_books %}
 	<div class="sidebar card">
 		<div class="card-header">{{ book.title }}</div>

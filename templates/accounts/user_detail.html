@@ -1,4 +1,5 @@
 {% extends '_base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
 {% block title %}User Detail{% endblock title %}
 
@@ -10,10 +11,49 @@
     {% else %}
         <p>{{ customuser.profile }}</p>
     {% endif %}
+    {% if request.user != customuser %}
+    <div class="follow">
+        <a 
+            href="#" 
+            data-id="{{ customuser.id }}" 
+            data-action="{% if request.user in customuser.followers.all %}un{% endif%}follow" 
+            class="follow btn btn-outline-success">
+            {% if request.user in customuser.followers.all %}
+            フォローをやめる
+            {% else %}
+            フォローする
+            {% endif %}
+        </a>
+    </div>
+    {% endif %}
     <a href="{% url 'accounts:user_update' customuser.pk %}" class="btn btn-outline-secondary">Update</a>
-    <ul>
-        {% for event in customuser.events.all %}
-        <li>{{ event.event }} <span><a href="{{ event.event_url }}" class="btn btn-outline-info">Detail</a></span></li>
-        {% endfor %}
-    </ul>
 {% endblock content %}
+{% block sidebar %}
+	<div class="card">
+		<h4 class="card-header text-center">Followers : Followees</h3>
+		<div class="row follow-followers">
+			<div class="col text-end">
+				<span>followers : <span class="badge rounded-pill bg-primary follow-count">{{ customuser.following.all.count }}</span></span>
+			</div>
+			<div class="col text-end">
+				<span>follwees : <span class="badge rounded-pill bg-primary follower-count">{{ customuser.followers.all.count }}</span></span>
+			</div>
+		</div>
+	</div>
+	<div class="card">
+		<h3 class="card-header">
+			{{ customuser.username }}さんの最近の行動
+		</h3>
+		{% for action in customuser.accounts_actions.all|slice:":5" %}
+		<p>
+			{{ action.action_content }}
+			<a href="{{ action.action_url }}" class="btn btn-outline-danger">Detail</a>
+		</p>
+		
+		{% endfor %}
+	</div>
+{% endblock sidebar %}
+{% block script %}
+	<script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+	<script src="{% static 'js/user_detail.js' %}"></script>
+{% endblock script %}

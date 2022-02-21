@@ -18,20 +18,23 @@
 {% endblock content %}
 
 {% block sidebar %}
-	{% for book in recent_books %}
-	<div class="sidebar card">
-		<div class="card-header">{{ book.title }}</div>
-		<div class="card-body">
-			<div class="text-center">
-				<img src="{{ book.image_url }}" alt="None">
+	
+		<h3 class="introduction text-end">最近登録された本</h3>
+		{% for book in recent_books %}
+		<div class="sidebar card">
+			<div class="card-header">{{ book.title }}</div>
+			<div class="card-body">
+				<div class="text-center">
+					<img src="{{ book.image_url }}" alt="None">
+				</div>
+				<p>カテゴリー: <a href="{% url 'books:home' book.category.id %}">{{ book.category }}</a></p>
 			</div>
-			<p>カテゴリー: <a href="{% url 'books:home' book.category.id %}">{{ book.category }}</a></p>
+			<div class="card-footer">
+				<a href="{{ book.get_absolute_url }}" class="btn btn-outline-danger">詳細</a>
+			</div>
 		</div>
-		<div class="card-footer">
-			<a href="{{ book.get_absolute_url }}" class="btn btn-outline-danger">詳細</a>
-		</div>
-	</div>
-	{% endfor %}
+		{% endfor %}
+	
 {% endblock sidebar %}
 {% block script %}
 	<script src="{% static 'js/utils.js' %}"></script>

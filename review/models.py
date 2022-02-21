@@ -6,7 +6,6 @@ from core.behaviors import (
     ActiveModel,
     TimeStampModel,
     PublishModel,
-    PublishManager
 )
 
 

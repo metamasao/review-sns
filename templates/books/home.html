@@ -10,32 +10,62 @@
 		<h2>本サイトの目的</h2>
 	</div>
 	
-	<div class="row row-cols-2 row-cols-md-3 row-cols-lg-5">
+	<div class="row row-cols-3 row-cols-md-4 row-cols-lg-5 g-2">
 		{% for book in books %}
 		<div class="col">						
-			<div class="card h-100">								
-				<img src="{{ book.image_url }}" class="img-fluid img-thumbnail h-100" alt="none">																
-				<p class="card-title h-100">{{ book.title }}</p>				
-				<p>カテゴリー: <a href="{% url 'books:home' book.category.id %}">{{ book.category }}</a></p>
-				<br>
-				<a href="{{ book.get_absolute_url }}" class="btn btn-outline-danger">詳細</a>
+			<div class="card h-100">
+				<img src="{{ book.image_url }}" class="img-fluid img-thumbnail h-100" alt="none">	
+				<div class="card-body h-100">
+					<p class="card-title">{{ book.title }}</p>				
+					<p>カテゴリー: <a href="{% url 'books:home' book.category.id %}">{{ book.category }}</a></p>
+				</div>
+				<div class="card-footer">
+					<a href="{{ book.get_absolute_url }}" class="btn btn-outline-danger">詳細</a>
+				</div>
 			</div>			
 		</div>
 		{% endfor %}		
 	</div>
-	
+	<br>
+	<br>
+	<div class="page">
+		<nav aria-label="Top page">
+			<ul class="pagination">
+				{% if page_obj.has_previous %}
+				<li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+				<li class="page-item">
+				<a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+					{{ page_obj.previous_page_number }}
+				</a>
+				</li>
+				{% endif %}		  
+				<li class="page-item active"><a class="page-link" href="#">{{ page_obj.number }}</a></li>
+				{% if page_obj.has_next %}
+				<li class="page-item">
+				<a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+					{{ page_obj.next_page_number }}
+				</a>
+				</li>
+				<li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+				{% endif %}
+			</ul>
+		</nav>
+	</div>
 		
 {% endblock content %}
 
 {% block sidebar %}
 	<div class="sidebar card">
-		{% if user.is_authenticated %}
-		<h2>Welcome, {{ user.username }}</h2>
-		{% else %}
-		<h2>Welcome</h2>
-		<p>You can register the following link</p>
-		<a href="{% url 'accounts:signup' %}">Register!</a>
-		{% endif %}
+		<p class="card-header">カテゴリー</p>
+		<div class="card-body text-end">
+			{% for category in category_order_by_books %}
+			<p><a href="{% url 'books:home' category.id %}">{{ category.category }}</a>
+				<span class="badge rounded-pill bg-danger">
+					{{ category.related_books_counts }}
+				</span>
+			</p>
+			{% endfor %}
+		</div>
 	</div>
 	<a href="{% url 'books:create' %}" class="btn btn-success">本を登録する</a>
 {% endblock sidebar %}

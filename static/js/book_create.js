@@ -3,18 +3,18 @@ const searchBook = document.querySelector('form .book-search')
 searchBook.addEventListener('click', (event) => {
     event.preventDefault();
     const description = document.querySelector('.search-result');
-    const inputValue = document.querySelector('#div_id_isbn input').value;
+    const inputValue = document.querySelector('#div_id_isbn input');
     const para = document.createElement('p');
 
     description.textContent = '';
 
-    if (/^\d{13}$/.test(inputValue)) {
+    if (/^\d{13}$/.test(inputValue.value)) {
         let data = null;
         let error = null;
         let summary = null;
         
         axios
-            .get(`https://api.openbd.jp/v1/get?isbn=${inputValue}`)
+            .get(`https://api.openbd.jp/v1/get?isbn=${inputValue.value}`)
             .then(res => {
                 if (res.data[0] !== null && Object.values(res.data[0].onix.CollateralDetail).length !== 0) {
                     data = res.data[0].onix.CollateralDetail;
@@ -58,4 +58,5 @@ searchBook.addEventListener('click', (event) => {
         para.textContent = '数字のみを13文字入力してください';
     }
     description.appendChild(para);
+    inputValue.focus();
 })

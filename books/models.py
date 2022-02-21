@@ -1,10 +1,21 @@
 from django.db import models
+from django.db.models import Count
 
 from core.behaviors import UUIDModel, UUIDURLModel, TimeStampModel
 from .utils import get_book_info
 
+
+class CategoryManager(models.Manager):
+
+    def get_queryset_order_by_books(self):
+        queryset = self.annotate(related_books_counts=Count('books_books'))
+        return queryset.order_by('-related_books_counts')
+
+
 class Category(UUIDModel):
     category = models.CharField(max_length=31, unique=True)
+
+    objects = CategoryManager()
 
     def __str__(self):
         return self.category

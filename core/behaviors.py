@@ -24,7 +24,7 @@ class UUIDURLModel(UUIDModel):
 
     @property
     def url_name(self):
-        return None
+        raise NotImplementedError('オーバーライドしてください')
 
     def get_url_kwargs(self, **kwargs):
         kwargs.update(getattr(self, 'url_kwargs', {}))
