@@ -1,12 +1,12 @@
 from django.http import HttpResponseBadRequest
 
 
-class PageMixin:
+class NavPageMixin:
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if getattr(self, 'page', None):
-            context['page'] = self.page
+        if getattr(self, 'nav_page', None):
+            context['nav_page'] = self.nav_page
         return context
 
 

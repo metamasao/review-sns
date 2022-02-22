@@ -1,3 +1,4 @@
+import logging
 from django.views import generic
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -7,6 +8,8 @@ from django.http import JsonResponse
 from .forms import CustomUserCreationForm
 from .models import CustomUser, Follow
 from core.viewmixin import AjaxPostRequired
+
+logger = logging.getLogger(__name__)
 
 
 class SignupView(generic.CreateView):
@@ -18,13 +21,14 @@ class SignupView(generic.CreateView):
         login(self.request, self.object)
         return valid
 
-class UserDetail(LoginRequiredMixin, generic.DetailView):
+
+class UserDetailView(LoginRequiredMixin, generic.DetailView):
     model = CustomUser
     template_name = 'accounts/user_detail.html'
     login_url = 'accounts:login'
 
 
-class UserUpdate(LoginRequiredMixin, generic.UpdateView):
+class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = CustomUser
     fields = ('username', 'email', 'profile')
     template_name = 'accounts/user_update.html'
@@ -34,11 +38,10 @@ class UserUpdate(LoginRequiredMixin, generic.UpdateView):
 class UserFollowView(AjaxPostRequired, generic.View):
 
     def post(self, request, *args, **kwargs):
-        import logging
         user_id = request.POST.get('id')
         action = request.POST.get('action')
-        logging.info(user_id)
-        logging.info(action)
+        logger.debug(user_id)
+        logger.debug(action)
 
         user_to = get_object_or_404(
             CustomUser,

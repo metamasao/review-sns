@@ -4,14 +4,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Book, Category
 from .forms import BookForm
-from core.viewmixin import PageMixin
+from core.viewmixin import NavPageMixin
 
-class BookListHomeView(PageMixin, generic.ListView):
+
+class BookListHomeView(NavPageMixin, generic.ListView):
     model = Book
     template_name = 'books/home.html'
-    context_object_name = 'books'
     paginate_by = 10
-    page = 'home'
+    nav_page = 'home'
 
     def get_queryset(self, *args, **kwargs):
         queryset = super().get_queryset(*args, **kwargs)
@@ -39,10 +39,10 @@ class BookDetailView(generic.DetailView):
         context['same_category_books'] = same_category_books[:5]
         return context
         
-class BookCreateView(LoginRequiredMixin, PageMixin, generic.CreateView):
+class BookCreateView(LoginRequiredMixin, NavPageMixin, generic.CreateView):
     form_class = BookForm
     template_name = 'books/book_create.html'
-    page = 'create'
+    nav_page = 'create'
     login_url = 'accounts:login'
 
     def get_context_data(self, **kwargs):

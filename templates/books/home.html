@@ -11,7 +11,7 @@
 	</div>
 	
 	<div class="row row-cols-3 row-cols-md-4 row-cols-lg-5 g-2">
-		{% for book in books %}
+		{% for book in page_obj %}
 		<div class="col">						
 			<div class="card h-100">
 				<img src="{{ book.image_url }}" class="img-fluid img-thumbnail h-100" alt="none">	
