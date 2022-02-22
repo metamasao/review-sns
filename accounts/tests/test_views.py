@@ -86,13 +86,13 @@ class AccountsViewTest(TestCase):
         with self.assertTemplateNotUsed('accounts/user_not_update.html'):
             response.render()
         
-    def test_user_follow_view_get_bad_response(self):
+    def test_user_follow_view_get_bad_request(self):
         request = self.factory.get('/accounts/follow')
         request.user = self.user
         response = UserFollowView.as_view()(request)
         self.assertEqual(response.status_code, 400)
 
-    def test_user_follow_view_post_bad_response(self):
+    def test_user_follow_view_post_bad_request(self):
         request = self.factory.post('/accounts/follow/', data={'id':self.follow_user.pk, 'action':'follow'})
         request.user = self.user
         response = UserFollowView.as_view()(request)

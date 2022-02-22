@@ -9,5 +9,6 @@ def get_book_info(isbn):
     response = requests.get(api_url)
     
     if response.status_code != 200:
-        logger.warning('openbd seems to be something wrong')
+        logger.warning('Something seems to be wrong with openbd.')
+        return None
     return response.json()[0]
