@@ -10,6 +10,7 @@ from core.viewmixin import NavPageMixin
 class BookListHomeView(NavPageMixin, generic.ListView):
     model = Book
     template_name = 'books/home.html'
+    context_object_name = 'books'
     paginate_by = 10
     nav_page = 'home'
 

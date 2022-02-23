@@ -1,8 +1,12 @@
+import requests
+import logging
 from django.db import models
 from django.db.models import Count
 
 from core.behaviors import UUIDModel, UUIDURLModel, TimeStampModel
 from .utils import get_book_info
+
+logger = logging.getLogger(__name__)
 
 
 class CategoryManager(models.Manager):
@@ -40,12 +44,23 @@ class Book(UUIDURLModel, TimeStampModel):
     def __str__(self):
         return self.title
 
+    def get_book_info(self):
+        api_url = f'https://api.openbd.jp/v1/get?isbn={self.isbn}'
+        response = requests.get(api_url)
+        if response.status_code != 200:
+            logger.warning('Something seems to be wrong with openbd.')
+            return None
+        
+        response_data = response.json()[0]
+        if response_data is None:
+            return None
+        return response_data.get('summary')
+
     def save(self, *args, **kwargs):
-        response = get_book_info(isbn=self.isbn)
-        if response is not None:
-            book_summary = response.get('summary')
-            self.title = book_summary.get('title')[:256]
-            self.image_url = book_summary.get('cover')
+        book_info = self.get_book_info()
+        if book_info:
+            self.title = book_info.get('title')[:256]
+            self.image_url = book_info.get('cover')
         super().save(*args, **kwargs)
         
 
