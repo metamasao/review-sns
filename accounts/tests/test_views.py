@@ -47,12 +47,10 @@ class AccountsViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_signup_view_get(self):
-        request = self.factory.get('/accounts/')
+        request = self.factory.get('/accounts/signup/')
         response = SignupView.as_view()(request)
-        fields_dict = response.context_data['form'].fields
         self.assertEqual(response.status_code, 200)
-        self.assertIn('username', fields_dict)
-        self.assertIn('email', fields_dict)
+        self.assertEqual('CustomUserCreationForm', response.context_data['form'].__class__.__name__)
         with self.assertTemplateUsed('registration/signup.html'):
             response.render()
         with self.assertTemplateNotUsed('accounts/signup.html'):
@@ -74,12 +72,8 @@ class AccountsViewTest(TestCase):
         request = self.factory.get(f'/accounts/{self.user.pk}/update/')
         request.user = self.user
         response = UserUpdateView.as_view()(request, pk=self.user.pk)
-        fields_dict = response.context_data['form'].fields
         self.assertEqual(response.status_code, 200)
         self.assertIn('form', response.context_data)
-        self.assertIn('username', fields_dict)
-        self.assertIn('email', fields_dict)
-        self.assertIn('profile', fields_dict)
         with self.assertTemplateUsed('accounts/user_update.html'):
             response.render()
         with self.assertTemplateNotUsed('accounts/user_not_update.html'):
