@@ -4,16 +4,21 @@ from django.db import models
 from django.db.models import Count
 
 from core.behaviors import UUIDModel, UUIDURLModel, TimeStampModel
-from .utils import get_book_info
 
 logger = logging.getLogger(__name__)
 
 
 class CategoryManager(models.Manager):
 
-    def get_queryset_order_by_books(self):
+    def order_by_the_number_of_books(self):
         queryset = self.annotate(related_books_counts=Count('books_books'))
         return queryset.order_by('-related_books_counts')
+
+
+class BookManager(models.Manager):
+
+    def get_same_category_books(self, instance, index=5):
+        return self.filter(category=instance.category).exclude(id=instance.id).order_by('-created')[:index]
 
 
 class Category(UUIDModel):
@@ -36,6 +41,8 @@ class Book(UUIDURLModel, TimeStampModel):
         null=True,
         on_delete=models.SET_NULL
     )
+
+    objects = BookManager()
 
     @property
     def url_name(self):

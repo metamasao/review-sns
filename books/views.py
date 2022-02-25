@@ -20,12 +20,12 @@ class BookListHomeView(NavPageMixin, generic.ListView):
         if category_pk:
             category = get_object_or_404(Category, id=category_pk)
             queryset = queryset.filter(category=category)
-        return queryset
+        return queryset.order_by('-created',)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        category_queryset = Category.objects.get_queryset_order_by_books()
-        context['category_order_by_books'] = category_queryset
+        category_queryset = Category.objects.order_by_the_number_of_books()
+        context['category_queryset'] = category_queryset
         return context
 
 
@@ -35,9 +35,8 @@ class BookDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        category = self.object.category
-        same_category_books = Book.objects.filter(category=category).exclude(id=self.object.id)
-        context['same_category_books'] = same_category_books[:5]
+        same_category_books = Book.objects.get_same_category_books(instance=self.object)
+        context['same_category_books'] = same_category_books
         return context
         
 class BookCreateView(LoginRequiredMixin, NavPageMixin, generic.CreateView):

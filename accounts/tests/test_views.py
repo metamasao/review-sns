@@ -1,5 +1,5 @@
 import logging
-from django.test import TestCase, RequestFactory
+from django.test import TestCase, RequestFactory, Client
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.middleware import SessionMiddleware
@@ -48,7 +48,6 @@ class AccountsViewTest(TestCase):
 
     def test_signup_view_get(self):
         request = self.factory.get('/accounts/')
-        request.user = AnonymousUser()
         response = SignupView.as_view()(request)
         fields_dict = response.context_data['form'].fields
         self.assertEqual(response.status_code, 200)
@@ -98,6 +97,19 @@ class AccountsViewTest(TestCase):
         response = UserFollowView.as_view()(request)
         self.assertEqual(response.status_code, 400)
 
+    def test_user_follow_view_post_without_csrf(self):
+        client = Client(enforce_csrf_checks=True)
+        client.login(username='testuser1', password='testpass123')
+        response = client.post(
+            '/accounts/follow/',
+            data={
+                'id':self.follow_user.pk, 
+                'action':'follow'
+            },
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+        self.assertEqual(response.status_code, 403)
+        
     def test_user_follow_view_follow(self):
         request = self.factory.post(
             '/accounts/follow/',
