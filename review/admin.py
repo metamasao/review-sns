@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Review
+
+@admin.register(Review)
+class ReviewModelAdmin(admin.ModelAdmin):
+    list_disply = '__all__'

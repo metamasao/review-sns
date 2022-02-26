@@ -58,7 +58,7 @@
 	<div class="sidebar card">
 		<p class="card-header">カテゴリー</p>
 		<div class="card-body text-end">
-			{% for category in category_order_by_books %}
+			{% for category in category_queryset %}
 			<p><a href="{% url 'books:home' category.id %}">{{ category.category }}</a>
 				<span class="badge rounded-pill bg-danger">
 					{{ category.related_books_counts }}
