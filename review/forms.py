@@ -11,7 +11,7 @@ class ReviewModelForm(forms.ModelForm):
 
     class Meta:
         model = Review
-        fields = ('title', 'body', 'isbn', 'recomending_text',)
+        fields = ('title', 'body', 'status', 'recomending_text',)
 
     def clean_isbn(self):
         isbn_cleaned_data = self.cleaned_data['isbn']
@@ -22,4 +22,4 @@ class ReviewModelForm(forms.ModelForm):
             Book.objects.get(isbn=isbn_cleaned_data)
             return isbn_cleaned_data
         except Book.DoesNotExist:
-            raise ValidationError('該当する本が当サイトに登録されていません。本を登録してください。')
+            raise ValidationError('該当する本が当サイトに登録されていません。ページ上部のナビゲーションバーから本を登録してください。')

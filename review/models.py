@@ -7,6 +7,7 @@ from core.behaviors import (
     ActiveModel,
     TimeStampModel,
     PublishModel,
+    PublishManager
 )
 
 
@@ -35,3 +36,4 @@ class Review(
     body = models.TextField()
     recomending_text = models.CharField(max_length=255)
     
+    objects = PublishManager()

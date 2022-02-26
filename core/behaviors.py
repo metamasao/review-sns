@@ -69,14 +69,14 @@ class PublishModel(models.Model):
         ('public', 'public'),
     )
 
-    status = models.CharField(max_length=6, choices=STATUS)
+    status = models.CharField(max_length=6, choices=STATUS, default='draft')
     published = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         abstract = True
 
     def save(self, *args, **kwargs):
-        if not self.published and self.status=='public':
+        if self.status=='public' and not self.published:
             self.published = timezone.now()
         super().save(*args, **kwargs)
 
