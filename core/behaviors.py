@@ -82,13 +82,13 @@ class PublishModel(models.Model):
 
     @property
     def published_recently(self):
-        return self.published > timezone.now() - datetime.timedelta(days=3)
+        return (self.published > timezone.now() - datetime.timedelta(days=3)) if self.published is not None else None
 
 
 class PublishManager(models.Manager):
 
     def public(self):
-            return self.filter(status='public')
+        return self.filter(status='public')
         
     def draft(self):
         return self.filter(status='draft')

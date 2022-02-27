@@ -16,7 +16,8 @@
 			<div class="card h-100">
 				<img src="{{ book.image_url }}" class="img-fluid img-thumbnail h-100" alt="none">	
 				<div class="card-body h-100">
-					<p class="card-title">{{ book.title }}</p>				
+					<p class="card-title">{{ book.title }}</p>
+					<p>isbn: {{ book.isbn }}</p>
 					<p>カテゴリー: <a href="{% url 'books:home' book.category.id %}">{{ book.category }}</a></p>
 				</div>
 				<div class="card-footer">

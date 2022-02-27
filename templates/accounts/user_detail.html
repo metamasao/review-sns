@@ -27,6 +27,10 @@
     </div>
     {% endif %}
     <a href="{% url 'accounts:user_update' customuser.pk %}" class="btn btn-outline-secondary">Update</a>
+
+	{% for review in customuser.review_reviews.all %}
+		{{ review.title }}
+	{% endfor %}
 {% endblock content %}
 {% block sidebar %}
 	<div class="card">

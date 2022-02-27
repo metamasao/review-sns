@@ -7,7 +7,7 @@ from django.http import JsonResponse
 
 from .forms import CustomUserCreationForm
 from .models import CustomUser, Follow
-from core.viewmixin import AjaxPostRequired
+from core.viewmixin import AjaxPostRequiredMixin
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
     login_url = 'accounts:login'
 
 
-class UserFollowView(AjaxPostRequired, generic.View):
+class UserFollowView(AjaxPostRequiredMixin, generic.View):
 
     def post(self, request, *args, **kwargs):
         user_id = request.POST.get('id')
