@@ -4,6 +4,7 @@ from django.conf import settings
 from accounts.models import Action
 from books.models import Book
 from core.behaviors import (
+    UUIDModel,
     UUIDURLModel,
     AuthorModel,
     ActiveModel,
@@ -77,5 +78,4 @@ class Like(TimeStampModel):
 
     def __str__(self):
         return f'{self.user.username} liked {self.review.title}'
-
 

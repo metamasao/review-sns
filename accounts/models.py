@@ -50,6 +50,7 @@ class Follow(TimeStampModel):
         user_to_name = self.user_to.username
         return f'{user_from_name} follows {user_to_name}'
 
+
 class ActionManager(models.Manager):
 
     def get_action_content(self, user, instance):

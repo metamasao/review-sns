@@ -59,7 +59,6 @@ class TimeStampModel(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ('-created',)
 
 
 class PublishModel(models.Model):

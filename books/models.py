@@ -18,7 +18,7 @@ class CategoryManager(models.Manager):
 class BookManager(models.Manager):
 
     def get_same_category_books(self, instance, index=5):
-        return self.filter(category=instance.category).exclude(id=instance.id).order_by('-created')[:index]
+        return self.filter(category=instance.category).exclude(id=instance.id)[:index]
 
 
 class Category(UUIDModel):
@@ -31,6 +31,7 @@ class Category(UUIDModel):
 
 
 class Book(UUIDURLModel, TimeStampModel):
+    author = models.CharField(max_length=255, blank=True)
     title = models.CharField(max_length=255, unique=True)
     image_url = models.URLField(blank=True)
     isbn = models.CharField(max_length=13, unique=True)
@@ -43,6 +44,9 @@ class Book(UUIDURLModel, TimeStampModel):
     )
 
     objects = BookManager()
+
+    class Meta:
+        ordering = ('-created',)
 
     @property
     def url_name(self):
@@ -68,6 +72,7 @@ class Book(UUIDURLModel, TimeStampModel):
         if book_info:
             self.title = book_info.get('title')[:256]
             self.image_url = book_info.get('cover')
+            self.author = book_info.get('author', '著者不明')
         super().save(*args, **kwargs)
         
 

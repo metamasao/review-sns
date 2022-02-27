@@ -11,7 +11,7 @@ class ReviewModelForm(forms.ModelForm):
 
     class Meta:
         model = Review
-        fields = ('title', 'body', 'status', 'recomending_text',)
+        fields = ('title', 'body', 'status', 'recommending_text',)
 
     def clean_isbn(self):
         isbn_cleaned_data = self.cleaned_data['isbn']
