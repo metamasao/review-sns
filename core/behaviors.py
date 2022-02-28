@@ -1,6 +1,7 @@
 import datetime
 import uuid
 from django.db import models
+from django.db.models import Count
 from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
@@ -59,6 +60,7 @@ class TimeStampModel(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ('-created',)
 
 
 class PublishModel(models.Model):
@@ -92,9 +94,5 @@ class PublishManager(models.Manager):
     def draft(self):
         return self.filter(status='draft')
 
-    def by_author(self, author):
-        if isinstance(author, AuthorModel):
-            return self.filter(author=author)
-        return self.filter(author__username=author)
 
         

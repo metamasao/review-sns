@@ -3,7 +3,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from books.models import Book
-from .models import Review
+from .models import Review, Comment
 
 
 class ReviewModelForm(forms.ModelForm):
@@ -23,3 +23,10 @@ class ReviewModelForm(forms.ModelForm):
             return isbn_cleaned_data
         except Book.DoesNotExist:
             raise ValidationError('該当する本が当サイトに登録されていません。ページ上部のナビゲーションバーから本を登録してください。')
+
+
+class CommentForm(forms.ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = ('comment',)

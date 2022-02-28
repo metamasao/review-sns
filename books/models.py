@@ -20,6 +20,10 @@ class BookManager(models.Manager):
     def get_same_category_books(self, instance, index=5):
         return self.filter(category=instance.category).exclude(id=instance.id)[:index]
 
+    def order_by_the_number_of_reviews(self):
+        queryset = self.annotate(related_reviews_counts=Count('review_reviews'))
+        return queryset.order_by('-related_reviews_counts')
+
 
 class Category(UUIDModel):
     category = models.CharField(max_length=31, unique=True)
@@ -30,7 +34,7 @@ class Category(UUIDModel):
         return self.category
 
 
-class Book(UUIDURLModel, TimeStampModel):
+class Book(TimeStampModel, UUIDURLModel):
     author = models.CharField(max_length=255, blank=True)
     title = models.CharField(max_length=255, unique=True)
     image_url = models.URLField(blank=True)
@@ -74,5 +78,4 @@ class Book(UUIDURLModel, TimeStampModel):
             self.image_url = book_info.get('cover')
             self.author = book_info.get('author', '著者不明')
         super().save(*args, **kwargs)
-        
-
+    

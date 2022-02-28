@@ -1,4 +1,6 @@
+import datetime
 from django.db import models
+from django.db.models import Count
 from django.conf import settings
 
 from accounts.models import Action
@@ -14,6 +16,18 @@ from core.behaviors import (
 )
 
 
+class ReviewManager(PublishManager):
+    
+    def by_author(self, author):
+        if isinstance(author, AuthorModel):
+            return self.filter(author=author)
+        return self.filter(author__username=author)
+
+    def order_by_the_number_of_likes(self):
+        queryset = self.annotate(likes_counts=Count('review_likes'))
+        return queryset.order_by('-likes_counts')
+
+
 class LikeManager(models.Manager):
 
     def create_like(self, user, review):
@@ -27,11 +41,11 @@ class LikeManager(models.Manager):
 
 
 class Review(
+    TimeStampModel,
     UUIDURLModel,
     AuthorModel,
     ActiveModel,
-    TimeStampModel,
-    PublishModel
+    PublishModel,
 ):
     related_book = models.ForeignKey(
         Book,
@@ -57,11 +71,20 @@ class Review(
         symmetrical=False,
     )
     
-    objects = PublishManager()
+    objects = ReviewManager()
+
+    def __str__(self):
+        return f'{self.title} on {self.related_book.title}'
 
     @property
     def url_name(self):
         return 'review:detail'
+
+    @property
+    def modified_after_published(self):
+        if self.published is None:
+            return None
+        return True if self.modified - self.published > datetime.timedelta(minutes=1) else False
 
 
 class Like(TimeStampModel):
@@ -79,3 +102,14 @@ class Like(TimeStampModel):
     def __str__(self):
         return f'{self.user.username} liked {self.review.title}'
 
+
+class Comment(TimeStampModel, AuthorModel, ActiveModel):
+    review = models.ForeignKey(
+        Review,
+        related_name='review_comments',
+        on_delete=models.CASCADE
+    )
+    comment = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f'comment on {self.review.title}'

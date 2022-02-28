@@ -10,13 +10,14 @@
 		<h2>本サイトの目的</h2>
 	</div>
 	
-	<div class="row row-cols-3 row-cols-md-4 row-cols-lg-5 g-2">
+	<div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-2">
 		{% for book in books %}
 		<div class="col">						
 			<div class="card h-100">
 				<img src="{{ book.image_url }}" class="img-fluid img-thumbnail h-100" alt="none">	
 				<div class="card-body h-100">
 					<p class="card-title">{{ book.title }}</p>
+					<p>{{ book.author }}</p>
 					<p>isbn: {{ book.isbn }}</p>
 					<p>カテゴリー: <a href="{% url 'books:home' book.category.id %}">{{ book.category }}</a></p>
 				</div>
