@@ -1,24 +1,44 @@
-from django.urls import reverse
+from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404
 from django.views import generic
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from books.models import Book
-from core.viewmixin import AuthorMixin
+from core.viewmixin import AuthorMixin, CustomUserPassTestMixin
 from .models import Review
 from .forms import ReviewModelForm, CommentForm
 
 
-class ReviewCreateView(AuthorMixin, generic.CreateView):
+class ReviewCreateView(LoginRequiredMixin, AuthorMixin, generic.CreateView):
     form_class = ReviewModelForm
     template_name = 'review/review_create.html'
 
     def form_valid(self, form):
-        next_book = Book.objects.get(isbn=form.cleaned_data['isbn'])
-        related_book = Book.objects.get(pk=self.kwargs.get('pk'))
+        next_book = get_object_or_404(
+            Book,
+            isbn=form.cleaned_data.get('isbn')
+        )
+        related_book = get_object_or_404(
+            Book,
+            pk=self.kwargs.get('pk')
+        )
         form.instance.related_book = related_book
         form.instance.next_book = next_book
         return super().form_valid(form)
+
+
+class ReviewUpdateView(LoginRequiredMixin, CustomUserPassTestMixin, generic.UpdateView):
+    model = Review
+    fields = ('title', 'body', 'recommending_text',)
+    template_name = 'review/review_update.html'
+
+
+class ReviewDeleteView(LoginRequiredMixin, CustomUserPassTestMixin, generic.DeleteView):
+    model = Review
+    template_name = 'review/review_delete.html'
+    success_url = reverse_lazy('books:home')
 
 
 class ReviewDetailGetView(generic.DetailView):
@@ -47,10 +67,10 @@ class ReviewDetailPostView(SingleObjectMixin, FormView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('review:detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('review:detail', kwargs={'pk': self.object.pk})
 
 
-class ReviewDetailView(generic.View):
+class ReviewDetailView(LoginRequiredMixin, generic.View):
 
     def get(self, request, *args, **kwargs):
         view = ReviewDetailGetView.as_view()
@@ -59,3 +79,5 @@ class ReviewDetailView(generic.View):
     def post(self, request, *args, **kwargs):
         view = ReviewDetailPostView.as_view()
         return view(request, *args, **kwargs)
+
+

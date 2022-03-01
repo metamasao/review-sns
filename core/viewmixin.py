@@ -1,4 +1,12 @@
 from django.http import HttpResponseBadRequest
+from django.contrib.auth.mixins import UserPassesTestMixin
+
+
+class CustomUserPassTestMixin(UserPassesTestMixin):
+
+    def test_func(self):
+        obj = self.get_object()
+        return obj.author == self.request.user
 
 
 class NavPageMixin:

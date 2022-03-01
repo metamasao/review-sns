@@ -43,7 +43,6 @@ class BookCreateView(LoginRequiredMixin, NavPageMixin, generic.CreateView):
     form_class = BookForm
     template_name = 'books/book_create.html'
     nav_page = 'create'
-    login_url = 'accounts:login'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
