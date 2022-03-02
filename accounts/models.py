@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from books.models import Book
 from core.behaviors import UUIDURLModel, TimeStampModel, AuthorModel
 
 
@@ -58,7 +59,11 @@ class ActionManager(models.Manager):
         if isinstance(instance, CustomUser):
             name = instance.username
             content = f'{user.username}さんが{name}さんをフォローしました。'
-            return content        
+            return content
+        if isinstance(instance, Book):
+            name = instance.title
+            content = f'{user.username}さんが{name}を登録しました。'
+            return content
         name = instance.title
         content = f'{user.username}さんが{name}をいいねしました。'
         return content

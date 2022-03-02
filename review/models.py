@@ -31,10 +31,7 @@ class ReviewManager(PublishManager):
 class LikeManager(models.Manager):
 
     def create_like(self, user, review):
-        like = self.model(
-            user=user,
-            review=review
-        )
+        like = self.model(user=user, review=review)
         like.save()
         Action.objects.create_action(user, review)
         return like

@@ -1,14 +1,48 @@
+from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
 from django.views import generic
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import FormView
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from books.models import Book
-from core.viewmixin import AuthorMixin, CustomUserPassTestMixin
-from .models import Review
+from core.viewmixin import AuthorMixin, CustomUserPassTestMixin, AjaxPostRequiredMixin
+from .models import Review, Like
 from .forms import ReviewModelForm, CommentForm
+
+
+class ReviewSidebarMixin:
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        recent_reviews = Review.objects.all()[:3]
+        context['recent_reviews'] = recent_reviews
+        return context
+
+
+class ReviewAuthorDetailView(LoginRequiredMixin, generic.ListView):
+    model = Review
+    template_name = 'review/review_author_detail.html'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        author = get_object_or_404(
+            get_user_model(),
+            pk=self.kwargs.get('pk')
+        )
+        queryset = queryset.by_author(author=author)
+        return queryset
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        author = get_object_or_404(
+            get_user_model(),
+            pk=self.kwargs.get('pk')
+        )
+        context['author'] = author
+        return context
 
 
 class ReviewCreateView(LoginRequiredMixin, AuthorMixin, generic.CreateView):
@@ -81,3 +115,24 @@ class ReviewDetailView(LoginRequiredMixin, generic.View):
         return view(request, *args, **kwargs)
 
 
+class LikeView(AjaxPostRequiredMixin, generic.View):
+    
+    def post(self, request, *args, **kwargs):
+        review_id = request.POST.get('id')
+        action = request.POST.get('action')
+        review = get_object_or_404(
+            Review,
+            id=review_id
+        )
+
+        if action == 'like':
+            Like.objects.create_like(
+                user=self.request.user,
+                review=review
+            )
+        else:
+            Like.objects.filter(
+                user=self.request.user,
+                review=review
+            ).delete()
+        return JsonResponse({'status': 'ok'})

@@ -23,7 +23,17 @@
             {{ review.recommending_text }}
         </p>
         <p class="card-footer">
-            <a href="#" class="btn btn-outline-danger">いいね</a>
+            <a href="#" 
+            data-id="{{ review.id }}" 
+            data-action="{% if request.user in review.review_likes.all %}un{% endif %}like" 
+            class="like btn btn-outline-danger">
+                {% if request.user in review.review_likes.all %}
+                いいねをやめる
+                {% else %}
+                いいね
+                {% endif %}
+            </a>
+            <span class="badge rounded-pill bg-danger like-count">{{ review.review_likes.all.count }}</span>
             <form method="post">
                 {% csrf_token %}
                 {{ form|crispy }}
@@ -48,3 +58,7 @@
         {% endfor %}
     </div>
 {% endblock content %}
+
+{% block script %}
+    <script src="{% static 'js/review_detail.js' %}"></script>
+{% endblock script %}

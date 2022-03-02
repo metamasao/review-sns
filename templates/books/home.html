@@ -17,7 +17,7 @@
 				<img src="{{ book.image_url }}" class="img-fluid img-thumbnail h-100" alt="none">	
 				<div class="card-body h-100">
 					<p class="card-title">{{ book.title }}</p>
-					<p>{{ book.author }}</p>
+					<p>{{ book.book_author }}</p>
 					<p>isbn: {{ book.isbn }}</p>
 					<p>カテゴリー: <a href="{% url 'books:home' book.category.id %}">{{ book.category }}</a></p>
 				</div>
@@ -67,6 +67,32 @@
 				</span>
 			</p>
 			{% endfor %}
+		</div>
+	</div>
+	<div class="sidebar card">
+		<p class="card-header">レビューの多い本</p>
+		<div class="card-body text-end">
+			{% for book in order_by_the_number_of_reviews %}
+			<p>
+				<a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
+				<span class="badge rounded-pill bg-danger">
+					{{ book.related_reviews_counts }}
+				</span>
+			</p>
+			{% endfor %}
+		</div>
+	</div>
+	<div class="sidebar card">
+		<p class="card-header">いいねの多いレビュー</p>
+		<div class="card-body text-end">
+		{% for review in review_order_by_the_number_of_likes %}		
+		<p>
+			<a href="{{ review.get_absolute_url }}">{{ review.title }} by {{ review.author.username }}</a>
+			<span class="badge rounded-pill bg-danger">
+				{{ review.likes_counts }}
+			</span>
+		</p>
+		{% endfor %}
 		</div>
 	</div>
 	<a href="{% url 'books:create' %}" class="btn btn-success">本を登録する</a>

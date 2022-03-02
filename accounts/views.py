@@ -43,20 +43,10 @@ class UserFollowView(AjaxPostRequiredMixin, generic.View):
         logger.debug(user_id)
         logger.debug(action)
 
-        user_to = get_object_or_404(
-            CustomUser,
-            id=user_id
-        )        
+        user_to = get_object_or_404(CustomUser, id=user_id)        
         user_from = self.request.user
         if action == 'follow':
-            Follow.objects.create_follow(
-                user_from=user_from,
-                user_to=user_to
-            )
+            Follow.objects.create_follow(user_from=user_from, user_to=user_to)
         else:
-            Follow.objects.filter(
-                user_from=user_from,
-                user_to=user_to
-            ).delete()
-
+            Follow.objects.filter(user_from=user_from, user_to=user_to).delete()
         return JsonResponse({'status': 'ok'})

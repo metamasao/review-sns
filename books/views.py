@@ -4,7 +4,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Book, Category
 from .forms import BookForm
-from core.viewmixin import NavPageMixin
+from accounts.models import Action
+from core.viewmixin import NavPageMixin, AuthorMixin
+from review.models import Review
 
 
 class BookListHomeView(NavPageMixin, generic.ListView):
@@ -14,8 +16,8 @@ class BookListHomeView(NavPageMixin, generic.ListView):
     paginate_by = 10
     nav_page = 'home'
 
-    def get_queryset(self, *args, **kwargs):
-        queryset = super().get_queryset(*args, **kwargs)
+    def get_queryset(self):
+        queryset = super().get_queryset()
         category_pk = self.kwargs.get('pk')
         if category_pk:
             category = get_object_or_404(Category, id=category_pk)
@@ -25,7 +27,11 @@ class BookListHomeView(NavPageMixin, generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         category_queryset = Category.objects.order_by_the_number_of_books()
+        order_by_the_number_of_reviews = Book.objects.order_by_the_number_of_reviews()[:5]
+        review_order_by_the_number_of_likes = Review.objects.order_by_the_number_of_likes()[:5]
         context['category_queryset'] = category_queryset
+        context['order_by_the_number_of_reviews'] = order_by_the_number_of_reviews
+        context['review_order_by_the_number_of_likes'] = review_order_by_the_number_of_likes
         return context
 
 
@@ -39,7 +45,7 @@ class BookDetailView(generic.DetailView):
         context['same_category_books'] = same_category_books
         return context
         
-class BookCreateView(LoginRequiredMixin, NavPageMixin, generic.CreateView):
+class BookCreateView(LoginRequiredMixin, NavPageMixin, AuthorMixin, generic.CreateView):
     form_class = BookForm
     template_name = 'books/book_create.html'
     nav_page = 'create'
@@ -49,3 +55,8 @@ class BookCreateView(LoginRequiredMixin, NavPageMixin, generic.CreateView):
         recent_books = Book.objects.all()[:3]
         context['recent_books'] = recent_books
         return context
+
+    def form_valid(self, form):
+        valid = super().form_valid(form)
+        Action.objects.create_action(self.request.user, self.object)
+        return valid

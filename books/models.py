@@ -3,7 +3,7 @@ import logging
 from django.db import models
 from django.db.models import Count
 
-from core.behaviors import UUIDModel, UUIDURLModel, TimeStampModel
+from core.behaviors import UUIDModel, UUIDURLModel, TimeStampModel, AuthorModel
 
 logger = logging.getLogger(__name__)
 
@@ -34,8 +34,8 @@ class Category(UUIDModel):
         return self.category
 
 
-class Book(TimeStampModel, UUIDURLModel):
-    author = models.CharField(max_length=255, blank=True)
+class Book(TimeStampModel, AuthorModel, UUIDURLModel):
+    book_author = models.CharField(max_length=255, blank=True)
     title = models.CharField(max_length=255, unique=True)
     image_url = models.URLField(blank=True)
     isbn = models.CharField(max_length=13, unique=True)
@@ -76,6 +76,6 @@ class Book(TimeStampModel, UUIDURLModel):
         if book_info:
             self.title = book_info.get('title')[:256]
             self.image_url = book_info.get('cover')
-            self.author = book_info.get('author', '著者不明')
+            self.book_author = book_info.get('author', '著者不明')
         super().save(*args, **kwargs)
     
