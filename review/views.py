@@ -28,19 +28,13 @@ class ReviewAuthorDetailView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        author = get_object_or_404(
-            get_user_model(),
-            pk=self.kwargs.get('pk')
-        )
+        author = get_object_or_404(get_user_model(), pk=self.kwargs.get('pk'))
         queryset = queryset.by_author(author=author)
         return queryset
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        author = get_object_or_404(
-            get_user_model(),
-            pk=self.kwargs.get('pk')
-        )
+        author = get_object_or_404(get_user_model(), pk=self.kwargs.get('pk'))
         context['author'] = author
         return context
 
@@ -50,14 +44,8 @@ class ReviewCreateView(LoginRequiredMixin, AuthorMixin, generic.CreateView):
     template_name = 'review/review_create.html'
 
     def form_valid(self, form):
-        next_book = get_object_or_404(
-            Book,
-            isbn=form.cleaned_data.get('isbn')
-        )
-        related_book = get_object_or_404(
-            Book,
-            pk=self.kwargs.get('pk')
-        )
+        next_book = get_object_or_404(Book, isbn=form.cleaned_data.get('isbn'))
+        related_book = get_object_or_404(Book,pk=self.kwargs.get('pk'))
         form.instance.related_book = related_book
         form.instance.next_book = next_book
         return super().form_valid(form)
@@ -120,19 +108,10 @@ class LikeView(AjaxPostRequiredMixin, generic.View):
     def post(self, request, *args, **kwargs):
         review_id = request.POST.get('id')
         action = request.POST.get('action')
-        review = get_object_or_404(
-            Review,
-            id=review_id
-        )
+        review = get_object_or_404(Review, id=review_id)
 
         if action == 'like':
-            Like.objects.create_like(
-                user=self.request.user,
-                review=review
-            )
+            Like.objects.create_like(user=self.request.user, review=review)
         else:
-            Like.objects.filter(
-                user=self.request.user,
-                review=review
-            ).delete()
+            Like.objects.filter(user=self.request.user, review=review).delete()
         return JsonResponse({'status': 'ok'})
