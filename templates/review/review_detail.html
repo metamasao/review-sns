@@ -4,34 +4,36 @@
 
 {% block title %}Review Detail{% endblock title %}
 
+
 {% block content %}
 
     <h2>レビュー詳細: {{ review.related_book.title }}</h2>
 
     <div class="card">
-        <h4 class="card-header">{{ review.title }} by {{ review.author.username }}</h4>
-        <p class="card-body">
-            <h5 class="card-subtitle mb-3 text-muted">
+        <div class="card-body">
+            <h3 class="card-title">{{ review.title }} by <a href="{% url 'review:author-detail' review.author.pk %}">{{ review.author.username }}</a></h3>
+            <h4 class="card-subtitle mb-3 text-muted">
                 {% if review.published %}公開: {{ review.published }}{% endif %}
                 作成: {{ review.created }}
                 {% if review.modified_after_published %}修正: {{ review.modified }}{% endif %}
-            </h5>
+            </h4>
             <p class="card-text">
                 {{ review.body }}
             </p>            
             <span>次の本: <a href="{{ review.next_book.get_absolute_url }}">{{ review.next_book.title }}</a></span>
             {{ review.recommending_text }}
-        </p>
-        <p class="card-footer">
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'review:update' review.pk %}" class="btn btn-outline-danger">修正する</a>
             <a href="#" 
-            data-id="{{ review.id }}" 
-            data-action="{% if request.user in review.review_likes.all %}un{% endif %}like" 
-            class="like btn btn-outline-danger">
-                {% if request.user in review.review_likes.all %}
-                いいねをやめる
-                {% else %}
-                いいね
-                {% endif %}
+                data-id="{{ review.id }}" 
+                data-action="{% if request.user in review.review_likes.all %}un{% endif %}like" 
+                class="like btn btn-outline-danger">
+                    {% if request.user in review.review_likes.all %}
+                    いいねをやめる
+                    {% else %}
+                    いいね
+                    {% endif %}
             </a>
             <span class="badge rounded-pill bg-danger like-count">{{ review.review_likes.all.count }}</span>
             <form method="post">
@@ -39,7 +41,7 @@
                 {{ form|crispy }}
                 <input type="submit" value="コメントする" class="btn btn-outline-danger">
             </form>
-        </p>
+        </div>
     </div>
 
     <div class="card">
@@ -58,6 +60,27 @@
         {% endfor %}
     </div>
 {% endblock content %}
+
+{% block sidebar %}
+    <div class="card">
+        <p class="card-header">最新のレビュー</p>
+        {% for recent_review in recent_reviews %}
+        <p class="card-text text-end">
+            <a href="{{ recent_review.get_absolute_url }}">{{ recent_review.title }} by {{ recent_review.author.username }}</a>
+        </p>
+        {% endfor %}
+    </div>
+
+    <div class="card">
+        <p class="card-header">フォローしてる人たちのアクション</p>
+        {% for action  in following_actions %}
+        <div class="card-text text-end">
+            <p>{{ action.action_content }}</p>
+            <a href="{{ action.action_url }}" class="btn btn-outline-danger">詳細</a>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock sidebar %}
 
 {% block script %}
     <script src="{% static 'js/review_detail.js' %}"></script>

@@ -7,8 +7,9 @@ from django.views.generic.edit import FormView
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from accounts.models import Action
 from books.models import Book
-from core.viewmixin import AuthorMixin, CustomUserPassTestMixin, AjaxPostRequiredMixin
+from core.viewmixin import AuthorMixin, CustomUserPassTestMixin, AjaxPostRequiredMixin, NavPageMixin
 from .models import Review, Like
 from .forms import ReviewModelForm, CommentForm
 
@@ -17,29 +18,66 @@ class ReviewSidebarMixin:
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        recent_reviews = Review.objects.all()[:3]
-        context['recent_reviews'] = recent_reviews
+        context['recent_reviews'] = Review.objects.all()[:5]
+        context['following_actions'] = Action.objects.get_following_actions(self.request.user)
         return context
 
 
-class ReviewAuthorDetailView(LoginRequiredMixin, generic.ListView):
+class ReviewDetailMixin:
+    detail_model = None
+
+    def get(self, request, *args, **kwargs):
+        self.detail_object = self.get_detail_object()
+        return super().get(request, *args, **kwargs)
+
+    def get_detail_object(self):
+        detail_object = get_object_or_404(self.detail_model, pk=self.kwargs.get('pk'))
+        return detail_object
+
+
+class ReviewListView(LoginRequiredMixin, ReviewSidebarMixin, NavPageMixin, generic.ListView):
+    queryset = Review.objects.order_by_the_number_of_likes()
+    template_name = 'review/review_list.html'
+    context_object_name = 'reviews'
+    nav_page = 'review'
+
+
+class ReviewAuthorDetailView(LoginRequiredMixin, ReviewDetailMixin, generic.ListView):
     model = Review
+    detail_model = get_user_model()
     template_name = 'review/review_author_detail.html'
+    context_object_name = 'reviews'
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        author = get_object_or_404(get_user_model(), pk=self.kwargs.get('pk'))
-        queryset = queryset.by_author(author=author)
+        queryset = super().get_queryset().filter(author=self.detail_object)
+        if self.detail_object != self.request.user:
+            queryset = queryset.filter(status='public')
         return queryset
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        author = get_object_or_404(get_user_model(), pk=self.kwargs.get('pk'))
-        context['author'] = author
+        context['author'] = self.detail_object
         return context
 
 
-class ReviewCreateView(LoginRequiredMixin, AuthorMixin, generic.CreateView):
+class ReviewBookDetailView(LoginRequiredMixin, ReviewDetailMixin, generic.ListView):
+    model = Review
+    detail_model = Book
+    template_name = 'review/review_book_detail.html'
+    context_object_name = 'reviews'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(related_book=self.detail_object)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['book'] = self.detail_object
+        context['same_category_books'] = Book.objects.get_same_category_books(instance=self.detail_object)
+        return context
+
+
+class ReviewCreateView(LoginRequiredMixin, ReviewSidebarMixin, AuthorMixin, generic.CreateView):
     form_class = ReviewModelForm
     template_name = 'review/review_create.html'
 
@@ -51,19 +89,19 @@ class ReviewCreateView(LoginRequiredMixin, AuthorMixin, generic.CreateView):
         return super().form_valid(form)
 
 
-class ReviewUpdateView(LoginRequiredMixin, CustomUserPassTestMixin, generic.UpdateView):
+class ReviewUpdateView(LoginRequiredMixin, CustomUserPassTestMixin, ReviewSidebarMixin, generic.UpdateView):
     model = Review
     fields = ('title', 'body', 'recommending_text',)
     template_name = 'review/review_update.html'
 
 
-class ReviewDeleteView(LoginRequiredMixin, CustomUserPassTestMixin, generic.DeleteView):
+class ReviewDeleteView(LoginRequiredMixin, CustomUserPassTestMixin, ReviewSidebarMixin, generic.DeleteView):
     model = Review
     template_name = 'review/review_delete.html'
     success_url = reverse_lazy('books:home')
 
 
-class ReviewDetailGetView(generic.DetailView):
+class ReviewDetailGetView(ReviewSidebarMixin, generic.DetailView):
     model = Review
     template_name = 'review/review_detail.html'
 
@@ -73,7 +111,7 @@ class ReviewDetailGetView(generic.DetailView):
         return context   
 
 
-class ReviewDetailPostView(SingleObjectMixin, FormView):
+class ReviewDetailPostView(SingleObjectMixin, ReviewSidebarMixin, FormView):
     model = Review
     form_class = CommentForm
     template_name = 'review/review_detail.html'

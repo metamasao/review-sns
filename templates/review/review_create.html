@@ -11,3 +11,23 @@
         <input type="submit" value="Create" class="btn btn-primary">
     </form>
 {% endblock content %}
+
+{% block sidebar %}
+    <div class="card">
+        <p class="card-header">最新のレビュー</p>
+        {% for review in recent_reviews %}
+        <p class="card-text text-end">
+            <a href="{{ review.get_absolute_url }}">{{ review.title }}</a>
+        </p>
+        {% endfor %}
+    </div>
+    <div class="card">
+        <p class="card-header">フォローしてる人たちのアクション</p>
+        {% for action  in following_actions %}
+        <div class="card-text text-end">
+            <p>{{ action.action_content }}</p>
+            <a href="{{ action.action_url }}" class="btn btn-outline-danger">詳細</a>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock sidebar %}

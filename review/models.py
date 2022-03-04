@@ -24,7 +24,7 @@ class ReviewManager(PublishManager):
         return self.filter(author__username=author)
 
     def order_by_the_number_of_likes(self):
-        queryset = self.annotate(likes_counts=Count('review_likes'))
+        queryset = self.filter(status='public').annotate(likes_counts=Count('review_likes'))
         return queryset.order_by('-likes_counts')
 
 

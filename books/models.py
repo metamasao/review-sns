@@ -21,7 +21,9 @@ class BookManager(models.Manager):
         return self.filter(category=instance.category).exclude(id=instance.id)[:index]
 
     def order_by_the_number_of_reviews(self):
-        queryset = self.annotate(related_reviews_counts=Count('review_reviews'))
+        queryset = self.filter(
+            review_reviews__status='public'
+            ).annotate(related_reviews_counts=Count('review_reviews'))
         return queryset.order_by('-related_reviews_counts')
 
 
@@ -34,8 +36,8 @@ class Category(UUIDModel):
         return self.category
 
 
-class Book(TimeStampModel, AuthorModel, UUIDURLModel):
-    book_author = models.CharField(max_length=255, blank=True)
+class Book(TimeStampModel, UUIDURLModel):
+    author = models.CharField(max_length=255, blank=True)
     title = models.CharField(max_length=255, unique=True)
     image_url = models.URLField(blank=True)
     isbn = models.CharField(max_length=13, unique=True)
@@ -54,7 +56,7 @@ class Book(TimeStampModel, AuthorModel, UUIDURLModel):
 
     @property
     def url_name(self):
-        return 'books:detail'
+        return 'review:book-detail'
 
     def __str__(self):
         return self.title
@@ -76,6 +78,6 @@ class Book(TimeStampModel, AuthorModel, UUIDURLModel):
         if book_info:
             self.title = book_info.get('title')[:256]
             self.image_url = book_info.get('cover')
-            self.book_author = book_info.get('author', '著者不明')
+            self.author = book_info.get('author', '著者不明')
         super().save(*args, **kwargs)
     

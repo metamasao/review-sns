@@ -1,0 +1,14 @@
+{% extends '_base.html' %}
+
+{% block title %}Review Detail{% endblock title %}
+
+{% block content %}
+
+    <h2>レビューを削除する</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" value="削除する" class="btn btn-outline-danger">
+    </form>
+
+{% endblock content %}

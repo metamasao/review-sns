@@ -16,7 +16,7 @@ class CustomUser(AbstractUser, UUIDURLModel):
 
     @property
     def url_name(self):
-        return 'accounts:detail'    
+        return 'review:author-detail'
 
 
 class FollowManager(models.Manager):
@@ -54,15 +54,15 @@ class Follow(TimeStampModel):
 
 class ActionManager(models.Manager):
 
+    def get_following_actions(self, request_user):
+        user_following = request_user.following.all()
+        return self.filter(author__in=user_following)
+
     def get_action_content(self, user, instance):
         content = None
         if isinstance(instance, CustomUser):
             name = instance.username
             content = f'{user.username}さんが{name}さんをフォローしました。'
-            return content
-        if isinstance(instance, Book):
-            name = instance.title
-            content = f'{user.username}さんが{name}を登録しました。'
             return content
         name = instance.title
         content = f'{user.username}さんが{name}をいいねしました。'

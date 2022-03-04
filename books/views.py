@@ -33,19 +33,9 @@ class BookListHomeView(NavPageMixin, generic.ListView):
         context['order_by_the_number_of_reviews'] = order_by_the_number_of_reviews
         context['review_order_by_the_number_of_likes'] = review_order_by_the_number_of_likes
         return context
-
-
-class BookDetailView(generic.DetailView):
-    model = Book
-    template_name = 'books/book_detail.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        same_category_books = Book.objects.get_same_category_books(instance=self.object)
-        context['same_category_books'] = same_category_books
-        return context
         
-class BookCreateView(LoginRequiredMixin, NavPageMixin, AuthorMixin, generic.CreateView):
+
+class BookCreateView(LoginRequiredMixin, NavPageMixin, generic.CreateView):
     form_class = BookForm
     template_name = 'books/book_create.html'
     nav_page = 'create'
@@ -55,8 +45,3 @@ class BookCreateView(LoginRequiredMixin, NavPageMixin, AuthorMixin, generic.Crea
         recent_books = Book.objects.all()[:3]
         context['recent_books'] = recent_books
         return context
-
-    def form_valid(self, form):
-        valid = super().form_valid(form)
-        Action.objects.create_action(self.request.user, self.object)
-        return valid

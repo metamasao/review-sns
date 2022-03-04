@@ -34,6 +34,9 @@
 						<a class="nav-link {% if nav_page == 'create' %}active{% endif %}" href="{% url 'books:create' %}">本を登録する</a>
 					</li>
 					<li class="nav-item">
+						<a href="{% url 'review:list' %}" class="nav-link {% if nav_page == 'review' %}active{% endif %} ">レビュー</a>
+					</li>
+					<li class="nav-item">
 						<form class="d-flex">
 							<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
 							<button class="btn btn-outline-success" type="submit">Search</button>
@@ -46,7 +49,7 @@
 							{{ user.username }}	
 						</button>
 						<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-							<li><a class="dropdown-item" href="{{ user.get_absolute_url }}">Mypage</a></li>
+							<li><a class="dropdown-item" href="{% url 'review:author-detail' request.user.pk %}">Mypage</a></li>
 							<li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Log out</a></li>
 							<li><a class="dropdown-item" href="{% url 'accounts:password_change' %}">Chage Password</a></li>
 						</ul>

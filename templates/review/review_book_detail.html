@@ -6,7 +6,7 @@
 {% block content %}
 
 	<div class="book-detail card" data-isbn="{{ book.isbn }}">
-		<h2 class="card-header">{{ book.title }} by {{ book.book_author }}</h2> 
+		<h2 class="card-header">{{ book.title }} by {{ book.author }}</h2> 
 		<div class="text-center">
 			<img src="{{ book.image_url }}" alt="none">
 		</div>
@@ -27,7 +27,7 @@
 		<div class="description" style="display: none;"></div>
 	</div>
 	
-	{% for review in book.review_reviews.all %}
+	{% for review in reviews %}
 	<div class="card">
 		<h4 class="card-header">{{ review.title }}</h4>
 		<p class="card-body">{{ review.body }}</p>

@@ -1,7 +1,7 @@
 import logging
 from django.views import generic
 from django.contrib.auth import login
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 
@@ -22,17 +22,15 @@ class SignupView(generic.CreateView):
         return valid
 
 
-class UserDetailView(LoginRequiredMixin, generic.DetailView):
-    model = CustomUser
-    template_name = 'accounts/user_detail.html'
-    login_url = 'accounts:login'
-
-
-class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
+class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = CustomUser
     fields = ('username', 'email', 'profile')
     template_name = 'accounts/user_update.html'
     login_url = 'accounts:login'
+
+    def test_func(self):
+        user = self.get_object()
+        return self.request.user == user
 
 
 class UserFollowView(AjaxPostRequiredMixin, generic.View):
