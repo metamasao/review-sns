@@ -1,4 +1,5 @@
 from django.http import HttpResponseBadRequest
+from django.db.models import Q
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 
@@ -7,6 +8,18 @@ class CustomUserPassTestMixin(UserPassesTestMixin):
     def test_func(self):
         obj = self.get_object()
         return obj.author == self.request.user
+
+
+class SearchResultMixin:
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.GET.get('query')
+        if query:
+            queryset = queryset.filter(
+                Q(title__icontains=query)|Q(author__icontains=query)
+            )
+        return queryset 
 
 
 class NavPageMixin:

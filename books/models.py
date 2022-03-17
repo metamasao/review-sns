@@ -51,9 +51,6 @@ class Book(TimeStampModel, UUIDURLModel):
 
     objects = BookManager()
 
-    class Meta:
-        ordering = ('-created',)
-
     @property
     def url_name(self):
         return 'review:book-detail'

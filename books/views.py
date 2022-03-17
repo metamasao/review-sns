@@ -1,15 +1,16 @@
 from django.views import generic
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Book, Category
 from .forms import BookForm
 from accounts.models import Action
-from core.viewmixin import NavPageMixin, AuthorMixin
+from core.viewmixin import NavPageMixin, SearchResultMixin
 from review.models import Review
 
 
-class BookListHomeView(NavPageMixin, generic.ListView):
+class BookListHomeView(NavPageMixin, SearchResultMixin, generic.ListView):
     model = Book
     template_name = 'books/home.html'
     context_object_name = 'books'

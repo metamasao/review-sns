@@ -18,7 +18,7 @@ class ReviewSidebarMixin:
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['recent_reviews'] = Review.objects.all()[:5]
+        context['popular_reviews'] = Review.objects.order_by_the_number_of_likes()[:5]
         context['following_actions'] = Action.objects.get_following_actions(self.request.user)
         return context
 
@@ -36,10 +36,11 @@ class ReviewDetailMixin:
 
 
 class ReviewListView(LoginRequiredMixin, ReviewSidebarMixin, NavPageMixin, generic.ListView):
-    queryset = Review.objects.order_by_the_number_of_likes()
+    queryset = Review.objects.public()
     template_name = 'review/review_list.html'
     context_object_name = 'reviews'
     nav_page = 'review'
+    paginate_by = 10
 
 
 class ReviewAuthorDetailView(LoginRequiredMixin, ReviewDetailMixin, generic.ListView):
@@ -47,6 +48,7 @@ class ReviewAuthorDetailView(LoginRequiredMixin, ReviewDetailMixin, generic.List
     detail_model = get_user_model()
     template_name = 'review/review_author_detail.html'
     context_object_name = 'reviews'
+    paginate_by = 10
 
     def get_queryset(self):
         queryset = super().get_queryset().filter(author=self.detail_object)
@@ -57,14 +59,18 @@ class ReviewAuthorDetailView(LoginRequiredMixin, ReviewDetailMixin, generic.List
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['author'] = self.detail_object
+        context['author_popular_reviews'] = Review.objects.order_by_the_number_of_likes().filter(
+            author=self.detail_object
+        )[:5]
         return context
 
 
 class ReviewBookDetailView(LoginRequiredMixin, ReviewDetailMixin, generic.ListView):
-    model = Review
+    queryset = Review.objects.public()
     detail_model = Book
     template_name = 'review/review_book_detail.html'
     context_object_name = 'reviews'
+    paginate_by = 10
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -107,7 +113,7 @@ class ReviewDetailGetView(ReviewSidebarMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form']  = CommentForm
+        context['form']  = CommentForm()
         return context   
 
 

@@ -7,7 +7,7 @@
 
 {% block content %}
 
-    <h2>レビュー詳細: {{ review.related_book.title }}</h2>
+    <h2>レビュー詳細: <a href="{{ review.related_book.get_absolute_url }}">{{ review.related_book.title }}</a></h2>
 
     <div class="card">
         <div class="card-body">
@@ -63,8 +63,8 @@
 
 {% block sidebar %}
     <div class="card">
-        <p class="card-header">最新のレビュー</p>
-        {% for recent_review in recent_reviews %}
+        <p class="card-header">人気のレビュー</p>
+        {% for recent_review in popular_reviews %}
         <p class="card-text text-end">
             <a href="{{ recent_review.get_absolute_url }}">{{ recent_review.title }} by {{ recent_review.author.username }}</a>
         </p>

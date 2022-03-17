@@ -40,6 +40,31 @@
     </div>
 
     {% endfor %}
+
+    <div class="page">
+		<nav aria-label="Top page">
+			<ul class="pagination">
+				{% if page_obj.has_previous %}
+				<li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+				<li class="page-item">
+				<a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+					{{ page_obj.previous_page_number }}
+				</a>
+				</li>
+				{% endif %}		  
+				<li class="page-item active"><a class="page-link" href="#">{{ page_obj.number }}</a></li>
+				{% if page_obj.has_next %}
+				<li class="page-item">
+				<a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+					{{ page_obj.next_page_number }}
+				</a>
+				</li>
+				<li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+				{% endif %}
+			</ul>
+		</nav>
+	</div>
+
     
 {% endblock content %}
 
@@ -73,6 +98,18 @@
     {% endif %}
     </div>
 </div>
+
+<div class="card">
+    <h3 class="card-header">
+        {{ author.username }}の人気のレビュー
+    </h3>
+    <div class="card-body">
+        {% for review in author_popular_reviews %}
+        <p class="text-end"><a href="{{ review.get_absolute_url }}">{{ review.title }}</a></p>
+        {% endfor %}
+    </div>
+</div>
+
 <div class="card">
     <h3 class="card-header">
         {{ author.username }}さんの最近の行動

@@ -14,8 +14,8 @@
 
 {% block sidebar %}
     <div class="card">
-        <p class="card-header">最新のレビュー</p>
-        {% for review in recent_reviews %}
+        <p class="card-header">人気のレビュー</p>
+        {% for review in popular_reviews %}
         <p class="card-text text-end">
             <a href="{{ review.get_absolute_url }}">{{ review.title }}</a>
         </p>
