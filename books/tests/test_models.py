@@ -57,12 +57,12 @@ class BookModelTest(TestCase):
 
     def test_book_model(self):
         for i, book in enumerate(self.book_queryset):
-            self.assertEqual(book.title, f'title {i}')
-            self.assertEqual(book.image_url, f'https://api.coverexample.com/cover{i}')
-            self.assertEqual(book.isbn, f'{1234567891123 + i}')
+            self.assertEqual(book.title, f'title {9-i}')
+            self.assertEqual(book.image_url, f'https://api.coverexample.com/cover{9-i}')
+            self.assertEqual(book.isbn, f'{1234567891123 + (9-i)}')
             self.assertEqual(
                 book.category.category,
-                'category 0' if i < 6 else 'category 1'
+                'category 1' if i < 4 else 'category 0'
             )
             self.assertEqual(book.__str__(), book.title)
-            self.assertEqual(book.url_name, 'books:detail')
+            self.assertEqual(book.url_name, 'review:book-detail')

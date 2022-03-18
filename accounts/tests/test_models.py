@@ -21,8 +21,8 @@ class CustomUserTest(TestCase):
     def test_custom_user_attribute(self):
         self.assertEqual(self.user1.username, 'testuser1')
         self.assertEqual(self.user1.email, 'testuser1@email.com')
-        self.assertURLEqual(self.user1.get_absolute_url(), f'/accounts/{self.user1.pk}/')
-        self.assertEqual(self.user1.url_name, 'accounts:detail')
+        self.assertURLEqual(self.user1.get_absolute_url(), f'/review/{self.user1.pk}/author-detail/')
+        self.assertEqual(self.user1.url_name, 'review:author-detail')
 
     def test_follow(self):
         follow_representaion = f'{self.user1.username} follows {self.user2.username}'

@@ -1,10 +1,12 @@
 import logging
+import re
 from unittest import mock
 from django.test import RequestFactory, TestCase, Client
 from django.contrib.auth import get_user_model
 
 from books.models import Book, Category
 from review.views import (
+    LikeView,
     ReviewCreateView,
     ReviewDeleteView,
     ReviewDetailView,
@@ -13,7 +15,7 @@ from review.views import (
     ReviewBookDetailView,
     ReviewUpdateView
 )
-from review.models import Review
+from review.models import Review, Like
 
 fmt = '%(asctime)s %(levelname)s %(lineno)s %(message)s'
 logging.basicConfig(level='DEBUG', format=fmt)
@@ -73,6 +75,8 @@ class ReviewViewTest(TestCase):
         self.draft_review_set = Review.objects.draft()
         self.public_review_set = Review.objects.public()
         self.review = self.public_review_set[0]
+        self.review_liked = self.public_review_set[1]
+        Like.objects.create_like(user=self.user, review=self.review_liked)
 
     def test_review_list_view(self):
         request = self.factory.get('/review/')
@@ -238,3 +242,41 @@ class ReviewViewTest(TestCase):
             response.render()
         with self.assertTemplateNotUsed('review/wrong.html'):
             response.render()
+
+    def test_review_detail_view_post(self):
+        request = self.factory.post(
+            f'/review/{self.review.pk}/detail/',
+            data={'comment': 'Test comment'}
+            )
+        request.user = self.user
+        response = ReviewDetailView.as_view()(request, pk=self.review.pk)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(self.review.review_comments.all()[0].comment, 'Test comment')
+
+    def test_review_like_view_like(self):
+        request = self.factory.post(
+            '/review/like/',
+            data={
+                'id': self.review.pk,
+                'action': 'like'
+            },
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+        request.user = self.user
+        response = LikeView.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.review.review_likes.all()[0], self.user)
+
+    def test_review_like_view_unlike(self):
+        request = self.factory.post(
+            '/review/like/',
+            data={
+                'id': self.review_liked.id,
+                'action': 'unlike'
+            },
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+        request.user = self.user
+        response = LikeView.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.review_liked.review_likes.all().count(), 0)

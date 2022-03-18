@@ -4,7 +4,7 @@ from django.test import TestCase, RequestFactory
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 
-from books.views import BookListHomeView, BookDetailView, BookCreateView
+from books.views import BookListHomeView, BookCreateView
 from books.models import Book, Category
 
 fmt = '%(asctime)s %(levelname)s %(lineno)s %(message)s'
@@ -75,18 +75,4 @@ class BookViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         for book in response.context_data['books']:
             self.assertEqual(book.category.category, category.category)
-    
-    def test_book_detail_view(self):
-        request = self.factory.get(f'/{self.book.pk}/detail/')
-        response = BookDetailView.as_view()(request, pk=self.book.pk)
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('book', response.context_data)
-        self.assertIn('same_category_books', response.context_data)
-        with self.assertTemplateUsed('books/book_detail.html'):
-            response.render()
-        with self.assertTemplateNotUsed('books/detail_book.html'):
-            response.render()
-        self.assertContains(response, self.book.title)
-        self.assertNotContains(response, 'Wrong title')
-        
     

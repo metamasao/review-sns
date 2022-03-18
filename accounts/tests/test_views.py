@@ -5,7 +5,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.middleware import SessionMiddleware
 
 
-from accounts.views import SignupView, UserDetailView, UserFollowView, UserUpdateView
+from accounts.views import SignupView, UserFollowView, UserUpdateView
 
 logger = logging.getLogger(__name__)
 
@@ -55,18 +55,6 @@ class AccountsViewTest(TestCase):
             response.render()
         with self.assertTemplateNotUsed('accounts/signup.html'):
             response.render()
-
-    def test_user_detail_view(self):
-        request = self.factory.get(f'/accounts/{self.user.pk}/')
-        request.user = self.user
-        response = UserDetailView.as_view()(request, pk=self.user.pk)
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('customuser', response.context_data)
-        with self.assertTemplateUsed('accounts/user_detail.html'):
-            response.render()
-        with self.assertTemplateNotUsed('registration/user_detail.html'):
-            response.render()
-
 
     def test_user_update_view(self):
         request = self.factory.get(f'/accounts/{self.user.pk}/update/')
