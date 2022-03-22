@@ -1,6 +1,6 @@
 import logging
 from unittest import mock
-from django.test import TestCase, RequestFactory
+from django.test import TestCase, RequestFactory, Client
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 
@@ -22,7 +22,8 @@ def create_books(get_book_info):
     for i in range(20):
         get_book_info.return_value = {
             'title': f'test title{i}',
-            'cover': f'https://book.com/cover{i}'
+            'cover': f'https://book.com/cover{i}',
+            'author': f'test author{i}'
         }
         book = Book(
             isbn=f'{1234567891123 + i}', 
@@ -61,6 +62,26 @@ class BookViewTest(TestCase):
             self.assertContains(response, book.title)
         self.assertNotContains(response, 'Wrong title')
     
+    def test_book_list_home_search_result_based_on_the_title(self):
+        request = self.factory.get(f'/?query={self.book.title}')
+        response = BookListHomeView.as_view()(request)
+        search_result_book = response.context_data['books'][0]
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(search_result_book.title, self.book.title)
+        self.assertEqual(search_result_book.author, self.book.author)
+        self.assertNotEqual(search_result_book.title, self.book_queryset[1].title)
+        self.assertNotEqual(search_result_book.author, self.book_queryset[1].author)
+
+    def test_book_list_home_search_result_based_on_the_author(self):
+        request = self.factory.get(f'/query={self.book.author}')
+        response = BookListHomeView.as_view()(request)
+        search_result_book = response.context_data['books'][0]
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(search_result_book.title, self.book.title)
+        self.assertEqual(search_result_book.author, self.book.author)
+        self.assertNotEqual(search_result_book.title, self.book_queryset[1].title)
+        self.assertNotEqual(search_result_book.author, self.book_queryset[1].author)
+        
     def test_book_list_home_view_given_page(self):
         request = self.factory.get('/?page=2')
         response = BookListHomeView.as_view()(request)
@@ -76,3 +97,24 @@ class BookViewTest(TestCase):
         for book in response.context_data['books']:
             self.assertEqual(book.category.category, category.category)
     
+    def test_book_create_view_get(self):
+        request = self.factory.get('/create/')
+        request.user = self.user
+        response = BookCreateView.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('recent_books', response.context_data)
+        with self.assertTemplateUsed('books/book_create.html'):
+            response.render()
+
+    def test_book_create_view_post_invalid_data(self):
+        client = Client()
+        client.login(username='testuser', password='testpass123')
+        response = client.post(
+            '/create/',
+            data={
+                'title': 'Test book name',
+                'isbn': '12345678d1123'
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(response, 'form', 'isbn', '13桁の数字のみを入力してください。')

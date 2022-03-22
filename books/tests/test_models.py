@@ -19,7 +19,8 @@ def create_book(get_book_info):
     for i in range(10):
         get_book_info.return_value = {
             'title': f'title {i}',
-            'cover': f'https://api.coverexample.com/cover{i}'
+            'cover': f'https://api.coverexample.com/cover{i}',
+            'author': f'author {i}'
         }
         book = Book(
             isbn=f'{1234567891123 + i}',

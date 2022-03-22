@@ -14,5 +14,5 @@ class BookForm(forms.ModelForm):
         isbn_data = self.cleaned_data['isbn']
         m = re.match(r'^\d{13}$', isbn_data)
         if not m:
-            raise ValidationError('13桁の数字のみを入力してください')
+            raise ValidationError('13桁の数字のみを入力してください。')
         return isbn_data

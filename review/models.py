@@ -6,7 +6,6 @@ from django.conf import settings
 from accounts.models import Action
 from books.models import Book
 from core.behaviors import (
-    UUIDModel,
     UUIDURLModel,
     AuthorModel,
     ActiveModel,
@@ -17,11 +16,6 @@ from core.behaviors import (
 
 
 class ReviewManager(PublishManager):
-    
-    def by_author(self, author):
-        if isinstance(author, AuthorModel):
-            return self.filter(author=author)
-        return self.filter(author__username=author)
 
     def order_by_the_number_of_likes(self):
         queryset = self.filter(status='public').annotate(likes_counts=Count('review_likes'))
