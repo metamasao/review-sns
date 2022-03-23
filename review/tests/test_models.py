@@ -1,7 +1,4 @@
-import logging
-import datetime
 import time
-from unicodedata import category
 from unittest import mock
 from django.test import TestCase
 from django.contrib.auth import get_user_model

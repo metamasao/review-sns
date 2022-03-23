@@ -17,8 +17,6 @@ from review.views import (
 )
 from review.models import Review, Like
 
-fmt = '%(asctime)s %(levelname)s %(lineno)s %(message)s'
-logging.basicConfig(level='DEBUG', format=fmt)
 logger = logging.getLogger(__name__)
 
 @mock.patch.object(Book, 'get_book_info')

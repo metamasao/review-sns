@@ -5,7 +5,6 @@ from django.db.models import Count
 
 from books.models import Book, Category
 
-logging.basicConfig(level='DEBUG')
 logger = logging.getLogger(__name__)
 
 def create_category():
@@ -27,7 +26,7 @@ def create_book(get_book_info):
             category=category[0] if i < 6 else category[1]
         )
         book.save()
-        logger.info(f'title: {book.title} category: {book.category.category} cover: {book.image_url} isbn: {book.isbn}')
+        logger.debug(f'title: {book.title} category: {book.category.category} cover: {book.image_url} isbn: {book.isbn}')
     return Book.objects.all()
 
 class BookModelTest(TestCase):

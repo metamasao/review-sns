@@ -134,3 +134,34 @@ LOGOUT_REDIRECT_URL = 'books:home'
 
 # cripy-forms configurations
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# logging configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters':{
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {lineno} {message}',
+            'style': '{'
+        }
+    },
+    'handlers': {
+        'console':{
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'file': {
+            'level': env.str('DJANGO_LOG_LEVEL', default='WARNING'),
+            'class': 'logging.FileHandler',
+            'formatter': 'verbose',
+            'filename': 'debug.log'
+        }
+    },
+    'loggers':{
+        '':{
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG'
+        }
+    }
+}

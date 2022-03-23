@@ -19,7 +19,7 @@ class ReviewSidebarMixin:
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['popular_reviews'] = Review.objects.order_by_the_number_of_likes()[:5]
-        context['following_actions'] = Action.objects.get_following_actions(self.request.user)
+        context['following_actions'] = Action.objects.get_following_actions(self.request.user)[:10]
         return context
 
 

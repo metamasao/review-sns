@@ -3,7 +3,7 @@ import logging
 from django.db import models
 from django.db.models import Count
 
-from core.behaviors import UUIDModel, UUIDURLModel, TimeStampModel, AuthorModel
+from core.behaviors import UUIDModel, UUIDURLModel, TimeStampModel
 
 logger = logging.getLogger(__name__)
 
@@ -60,15 +60,16 @@ class Book(TimeStampModel, UUIDURLModel):
 
     def get_book_info(self):
         api_url = f'https://api.openbd.jp/v1/get?isbn={self.isbn}'
-        response = requests.get(api_url)
-        if response.status_code != 200:
-            logger.warning('Something seems to be wrong with openbd.')
+        try:
+            logger.info('Attempting to connect to openbd.')
+            response = requests.get(api_url)
+            response.raise_for_status()
+            response_data = response.json()[0]
+            return response_data.get('summary') if response_data is not None else None
+        except requests.exceptions.HTTPError as e:
+            logger.exception(e)
+            logger.warning('Connecting to openbd fails.')
             return None
-        
-        response_data = response.json()[0]
-        if response_data is None:
-            return None
-        return response_data.get('summary')
 
     def save(self, *args, **kwargs):
         book_info = self.get_book_info()

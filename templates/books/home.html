@@ -19,7 +19,9 @@
 					<p class="card-title">{{ book.title }}</p>
 					<p>{{ book.author }}</p>
 					<p>isbn: {{ book.isbn }}</p>
+					{% if book.category %}
 					<p>カテゴリー: <a href="{% url 'books:home' book.category.id %}">{{ book.category }}</a></p>
+					{% endif %}
 				</div>
 				<div class="card-footer">
 					<a href="{{ book.get_absolute_url }}" class="btn btn-outline-danger">詳細</a>

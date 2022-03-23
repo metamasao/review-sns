@@ -43,6 +43,7 @@ class UserFollowView(AjaxPostRequiredMixin, generic.View):
 
         user_to = get_object_or_404(CustomUser, id=user_id)        
         user_from = self.request.user
+
         if action == 'follow':
             Follow.objects.create_follow(user_from=user_from, user_to=user_to)
         else:

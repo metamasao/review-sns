@@ -7,8 +7,6 @@ from django.contrib.auth.models import AnonymousUser
 from books.views import BookListHomeView, BookCreateView
 from books.models import Book, Category
 
-fmt = '%(asctime)s %(levelname)s %(lineno)s %(message)s'
-logging.basicConfig(level='DEBUG', format=fmt)
 logger = logging.getLogger(__name__)
 
 def create_category():
