@@ -2,10 +2,12 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-{% block title %}Book Create{% endblock title %}
+{% block title %}本の登録{% endblock title %}
 
 {% block content %}
-	
+
+	<h2>本を登録する。</h2>
+
 	<div class="card">
 		<form method="post">
 			{% csrf_token %}
@@ -27,12 +29,16 @@
 				<div class="text-center">
 					<img src="{{ book.image_url }}" alt="None">
 				</div>
+				{% if book.category %}
 				<p>カテゴリー: <a href="{% url 'books:home' book.category.id %}">{{ book.category }}</a></p>
+				{% endif %}
 			</div>
 			<div class="card-footer">
 				<a href="{{ book.get_absolute_url }}" class="btn btn-outline-danger">詳細</a>
 			</div>
 		</div>
+		{% empty %}
+		<p>最近登録された本はありません</p>
 		{% endfor %}
 	
 {% endblock sidebar %}

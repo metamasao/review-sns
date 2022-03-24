@@ -1,7 +1,7 @@
 {% extends '_base.html' %}
 {% load static %}
 
-{% block title %}Review List{% endblock title %}
+{% block title %}レビュー一覧{% endblock title %}
 
 {% block content %}
     <h2>レビュー一覧</h2>
@@ -21,6 +21,8 @@
                 </a>
             </div>
         </div>
+    {% empty %}
+    <p>まだレビューがありません。</p>
     {% endfor %}
 
     <div class="page">
@@ -56,6 +58,8 @@
         <p class="card-text text-end">
             <a href="{{ review.get_absolute_url }}">{{ review.title }} by {{ review.author.username }}</a>
         </p>
+        {% empty %}
+        <p>まだレビューがありません。</p>
         {% endfor %}
     </div>
     <div class="card">
@@ -65,6 +69,8 @@
             <p>{{ action.action_content }}</p>
             <a href="{{ action.action_url }}" class="btn btn-outline-danger">詳細</a>
         </div>
+        {% empty %}
+        <p>フォローしてる人がいない、またはフォローしてる人のアクションがありません。</p>
         {% endfor %}
     </div>
 {% endblock sidebar %}

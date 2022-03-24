@@ -1,12 +1,14 @@
 {% extends '_base.html' %}
 {% load static %}
 
-{% block title %}Review Author Detail{% endblock title %}
+{% block title %}レビュワーの詳細{% endblock title %}
 
 {% block content %}
 
+    <h2>レビュワーの詳細</h2>
+
     <div class="card author-detail">
-        <h2 class="card-title">{{ author.username }}のプロフィール</h2>
+        <h3 class="card-title">{{ author.username }}のプロフィール</h3>
         <p class="card-text">
             {{ author.profile }}
         </p>
@@ -39,6 +41,8 @@
         </div>
     </div>
 
+    {% empty %}
+    <p>{{ author.username }}さんのレビューはまだありません。</p>
     {% endfor %}
 
     <div class="page">
@@ -101,11 +105,13 @@
 
 <div class="card">
     <h3 class="card-header">
-        {{ author.username }}の人気のレビュー
+        {{ author.username }}さんの人気のレビュー
     </h3>
     <div class="card-body">
         {% for review in author_popular_reviews %}
         <p class="text-end"><a href="{{ review.get_absolute_url }}">{{ review.title }}</a></p>
+        {% empty %}
+        <p>{{ author.username }}さんのレビューはまだありません。</p>
         {% endfor %}
     </div>
 </div>
@@ -119,7 +125,8 @@
         {{ action.action_content }}
         <a href="{{ action.action_url }}" class="btn btn-outline-danger">詳細</a>
     </p>
-    
+    {% empty %}
+    <p>{{ author.username }}さんの行動履歴はありません。</p>
     {% endfor %}
 </div>
 {% endblock sidebar %}

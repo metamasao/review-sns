@@ -1,11 +1,11 @@
 {% extends '_base.html' %}
 {% load crispy_forms_tags %}
 
-{% block title %}Update{% endblock title %}
+{% block title %}プロフィールの編集{% endblock title %}
 
 {% block content %}
 
-<h2>Update</h2>
+<h2>プロフィールを編集する。</h2>
 <form method="post">
     {% csrf_token %}
     {{ form|crispy }}

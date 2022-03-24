@@ -2,8 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-{% block title %}Review Detail{% endblock title %}
-
+{% block title %}レビューの詳細{% endblock title %}
 
 {% block content %}
 
@@ -68,6 +67,8 @@
         <p class="card-text text-end">
             <a href="{{ recent_review.get_absolute_url }}">{{ recent_review.title }} by {{ recent_review.author.username }}</a>
         </p>
+        {% empty %}
+        <p>まだレビューがありません。</p>
         {% endfor %}
     </div>
 

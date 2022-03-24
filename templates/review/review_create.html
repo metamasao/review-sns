@@ -2,9 +2,12 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-{% block title %}Create Review{% endblock title %}
+{% block title %}レビューの作成{% endblock title %}
 
 {% block content %}
+
+    <h2>レビューを作成する。</h2>
+
     <form method="post">
         {% csrf_token %}
         {{ form|crispy }}
@@ -19,6 +22,8 @@
         <p class="card-text text-end">
             <a href="{{ review.get_absolute_url }}">{{ review.title }}</a>
         </p>
+        {% empty %}
+        <p>まだレビューがありません。</p>
         {% endfor %}
     </div>
     <div class="card">
@@ -28,6 +33,8 @@
             <p>{{ action.action_content }}</p>
             <a href="{{ action.action_url }}" class="btn btn-outline-danger">詳細</a>
         </div>
+        {% empty %}
+        <p>フォローしてる人がいない、またはフォローしてる人のアクションがありません。</p>
         {% endfor %}
     </div>
 {% endblock sidebar %}
