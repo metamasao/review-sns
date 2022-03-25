@@ -18,6 +18,29 @@ class CustomUser(AbstractUser, UUIDURLModel):
     def url_name(self):
         return 'review:author-detail'
 
+    @property
+    def count_followings(self):
+        return self.following.all().count()
+
+    @property
+    def count_followers(self):
+        return self.followers.all().count()
+
+    @property
+    def count_reviews(self):
+        review_set = self.review_reviews.all()
+        return review_set.count()
+
+    @property
+    def count_review_likes(self):
+        total_likes = 0
+        review_set = self.review_reviews.all()
+        
+        for review in review_set:
+            review_likes = review.review_likes.all()
+            total_likes += review_likes.count()
+        return total_likes
+
 
 class FollowManager(models.Manager):
 
