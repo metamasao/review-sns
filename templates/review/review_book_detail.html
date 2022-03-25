@@ -31,8 +31,12 @@
 	
 	{% for review in reviews %}
 	<div class="card">
-		<h4 class="card-header">{{ review.title }}</h4>
-		<p class="card-body">{{ review.body|truncatechars:100 }}</p>
+		<div class="card-body">
+			<h4 class="card-title">
+				{{ review.title }} by <a href="{{ review.author.get_absolute_url }}">{{ review.author.username }}</a>
+			</h4>
+			<p>{{ review.body|truncatechars:100 }}</p>
+		</div>
 		<div class="card-footer">
 			<a href="{{ review.get_absolute_url }}" class="btn btn-outline-danger">詳細</a>
 		</div>

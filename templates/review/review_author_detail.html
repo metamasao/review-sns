@@ -8,15 +8,41 @@
     <h2>レビュワーの詳細</h2>
 
     <div class="card author-detail">
-        <h3 class="card-title">{{ author.username }}のプロフィール</h3>
-        <p class="card-text">
-            {{ author.profile }}
-        </p>
-        {% if request.user == author %}
-        <div class="card-footer">
-            <a href="{% url 'accounts:update' author.pk %}" class="btn btn-outline-danger">プロフィールを編集する</a>
+        <div class="card-body">
+            <h3 class="card-title">{{ author.username }}のプロフィール</h3>
+            <p class="card-text">
+                {{ author.profile|linebreaks }}
+            </p>
+            <p>総レビュー数: {{ author.count_reviews }}</p>
+            <p>レビューの総いいね数: {{ author.count_review_likes }}</p>
+            <p>
+                <div class="follow-followers">
+                    <span>
+                        <span>フォロー : <span class="badge rounded-pill bg-primary follow-count">{{ author.count_followings }}</span></span>
+                        <span>フォロワー : <span class="badge rounded-pill bg-primary follower-count">{{ author.count_followers }}</span></span>
+                    </span>
+                </div>                
+            </p>
+            <div class="card-footer">
+                {% if request.user == author %}
+                <a href="{% url 'accounts:update' author.pk %}" class="btn btn-outline-danger">プロフィールを編集する</a>
+                {% else %}
+                <div class="follow">
+                    <a 
+                        href="#" 
+                        data-id="{{ author.id }}" 
+                        data-action="{% if request.user in author.followers.all %}un{% endif%}follow" 
+                        class="follow btn btn-outline-danger">
+                        {% if request.user in author.followers.all %}
+                        フォローをやめる
+                        {% else %}
+                        フォローする
+                        {% endif %}
+                    </a>
+                </div>
+                {% endif %}
+            </div>
         </div>
-        {% endif %}
     </div>
 
     <h2>{{ author.username }}のレビュー</h2>
@@ -73,62 +99,32 @@
 {% endblock content %}
 
 {% block sidebar %}
-
-<div class="card">
-    <h4 class="card-header text-center">Followers : Followees</h3>
-    <div class="row follow-followers">
-        <div class="col text-end">
-            <span>followers : <span class="badge rounded-pill bg-primary follow-count">{{ author.following.all.count }}</span></span>
+    <div class="card">
+        <h3 class="card-header">
+            {{ author.username }}さんの人気のレビュー
+        </h3>
+        <div class="card-body">
+            {% for review in author_popular_reviews %}
+            <p class="text-end"><a href="{{ review.get_absolute_url }}">{{ review.title }}</a></p>
+            {% empty %}
+            <p>{{ author.username }}さんのレビューはまだありません。</p>
+            {% endfor %}
         </div>
-        <div class="col text-end">
-            <span>follwees : <span class="badge rounded-pill bg-primary follower-count">{{ author.followers.all.count }}</span></span>
-        </div>
     </div>
-    <div class="card-footer text-end">
-    {% if request.user != author %}
-    <div class="follow">
-        <a 
-            href="#" 
-            data-id="{{ author.id }}" 
-            data-action="{% if request.user in author.followers.all %}un{% endif%}follow" 
-            class="follow btn btn-outline-danger">
-            {% if request.user in author.followers.all %}
-            フォローをやめる
-            {% else %}
-            フォローする
-            {% endif %}
-        </a>
-    </div>
-    {% endif %}
-    </div>
-</div>
 
-<div class="card">
-    <h3 class="card-header">
-        {{ author.username }}さんの人気のレビュー
-    </h3>
-    <div class="card-body">
-        {% for review in author_popular_reviews %}
-        <p class="text-end"><a href="{{ review.get_absolute_url }}">{{ review.title }}</a></p>
+    <div class="card">
+        <h3 class="card-header">
+            {{ author.username }}さんの最近の行動
+        </h3>
+        {% for action in author.accounts_actions.all|slice:":5" %}
+        <p class="card-body text-end">
+            {{ action.action_content }}
+            <a href="{{ action.action_url }}" class="btn btn-outline-danger">詳細</a>
+        </p>
         {% empty %}
-        <p>{{ author.username }}さんのレビューはまだありません。</p>
+        <p>{{ author.username }}さんの行動履歴はありません。</p>
         {% endfor %}
     </div>
-</div>
-
-<div class="card">
-    <h3 class="card-header">
-        {{ author.username }}さんの最近の行動
-    </h3>
-    {% for action in author.accounts_actions.all|slice:":5" %}
-    <p class="card-body text-end">
-        {{ action.action_content }}
-        <a href="{{ action.action_url }}" class="btn btn-outline-danger">詳細</a>
-    </p>
-    {% empty %}
-    <p>{{ author.username }}さんの行動履歴はありません。</p>
-    {% endfor %}
-</div>
 {% endblock sidebar %}
 
 {% block script %}

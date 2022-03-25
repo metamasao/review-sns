@@ -39,7 +39,7 @@
 					<li class="nav-item">
 						<form method="get" action="{% url 'books:home' %}" class="d-flex">
 							<input class="form-control me-2" name="query" type="search" placeholder="タイトルまたは著者名" aria-label="Search">
-							<button class="btn btn-outline-success" type="submit">Search</button>
+							<input type="submit" value="検索する" class="btn btn-outline-success">
 						</form>
 					</li>
 				</ul>
@@ -49,14 +49,14 @@
 							{{ user.username }}	
 						</button>
 						<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-							<li><a class="dropdown-item" href="{% url 'review:author-detail' request.user.pk %}">Mypage</a></li>
-							<li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Log out</a></li>
-							<li><a class="dropdown-item" href="{% url 'accounts:password_change' %}">Chage Password</a></li>
+							<li><a class="dropdown-item" href="{% url 'review:author-detail' request.user.pk %}">マイページ</a></li>
+							<li><a class="dropdown-item" href="{% url 'accounts:logout' %}">ログアウト</a></li>
+							<li><a class="dropdown-item" href="{% url 'accounts:password_change' %}">パスワードの変更</a></li>
 						</ul>
 					</div>
 				{% else %}
-					<a href="{% url 'accounts:signup' %}"><button class="btn btn-outline-success">Sign up</button></a>
-					<a href="{% url 'accounts:login' %}"><button class="btn btn-outline-primary">Log in</button></a>
+					<a href="{% url 'accounts:signup' %}"><button class="btn btn-outline-success">登録する</button></a>
+					<a href="{% url 'accounts:login' %}"><button class="btn btn-outline-primary">ログインする</button></a>
 				{% endif %}
 			</div>
 		</div>

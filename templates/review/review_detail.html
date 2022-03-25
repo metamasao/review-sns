@@ -17,7 +17,7 @@
                 {% if review.modified_after_published %}修正: {{ review.modified }}{% endif %}
             </h4>
             <p class="card-text">
-                {{ review.body }}
+                {{ review.body|linebreaks }}
             </p>            
             <span>次の本: <a href="{{ review.next_book.get_absolute_url }}">{{ review.next_book.title }}</a></span>
             {{ review.recommending_text }}
@@ -56,6 +56,8 @@
                 {{ comment.comment }}
             </p>
         </div>
+        {% empty %}
+        <p>{{ review.title }}についてのコメントはまだありません。</p>
         {% endfor %}
     </div>
 {% endblock content %}
