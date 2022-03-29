@@ -20,10 +20,15 @@
                 {{ review.body|linebreaks }}
             </p>            
             <span>次の本: <a href="{{ review.next_book.get_absolute_url }}">{{ review.next_book.title }}</a></span>
-            {{ review.recommending_text }}
+            <p class="card-text">
+                {{ review.recommending_text }}
+            </p>
         </div>
         <div class="card-footer">
+            {% if request.user == review.author %}
             <a href="{% url 'review:update' review.pk %}" class="btn btn-outline-danger">修正する</a>
+            <a href="{% url 'review:delete' review.pk %}" class="btn btn-outline-danger">削除する</a>
+            {% endif %}
             <a href="#" 
                 data-id="{{ review.id }}" 
                 data-action="{% if request.user in review.review_likes.all %}un{% endif %}like" 

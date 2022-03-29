@@ -3,7 +3,6 @@ from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView,
 
 from .views import SignupView, UserUpdateView, UserFollowView
 
-app_name = 'accounts'
 urlpatterns = [
     path('signup/', SignupView.as_view(), name='signup'),
     path('login/', LoginView.as_view(), name='login'),

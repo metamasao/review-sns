@@ -25,7 +25,7 @@
             </p>
             <div class="card-footer">
                 {% if request.user == author %}
-                <a href="{% url 'accounts:update' author.pk %}" class="btn btn-outline-danger">プロフィールを編集する</a>
+                <a href="{% url 'update' author.pk %}" class="btn btn-outline-danger">プロフィールを編集する</a>
                 {% else %}
                 <div class="follow">
                     <a 

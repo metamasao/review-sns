@@ -12,3 +12,27 @@
     </form>
 
 {% endblock content %}
+    
+{% block sidebar %}
+    <div class="card">
+        <p class="card-header">人気のレビュー</p>
+        {% for review in popular_reviews %}
+        <p class="card-text text-end">
+            <a href="{{ review.get_absolute_url }}">{{ review.title }}</a>
+        </p>
+        {% empty %}
+        <p>まだレビューがありません。</p>
+        {% endfor %}
+    </div>
+    <div class="card">
+        <p class="card-header">フォローしてる人たちのアクション</p>
+        {% for action  in following_actions %}
+        <div class="card-text text-end">
+            <p>{{ action.action_content }}</p>
+            <a href="{{ action.action_url }}" class="btn btn-outline-danger">詳細</a>
+        </div>
+        {% empty %}
+        <p>フォローしてる人がいない、またはフォローしてる人のアクションがありません。</p>
+        {% endfor %}
+    </div>
+{% endblock sidebar %}
