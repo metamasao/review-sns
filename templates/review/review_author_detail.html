@@ -25,14 +25,14 @@
             </p>
             <div class="card-footer">
                 {% if request.user == author %}
-                <a href="{% url 'update' author.pk %}" class="btn btn-outline-danger">プロフィールを編集する</a>
+                <a href="{% url 'update' author.pk %}" class="btn btn-outline-primary">プロフィールを編集する</a>
                 {% else %}
                 <div class="follow">
                     <a 
                         href="#" 
                         data-id="{{ author.id }}" 
                         data-action="{% if request.user in author.followers.all %}un{% endif%}follow" 
-                        class="follow btn btn-outline-danger">
+                        class="follow btn btn-outline-primary">
                         {% if request.user in author.followers.all %}
                         フォローをやめる
                         {% else %}
@@ -62,7 +62,7 @@
                 </p>
             </div>
             <div class="card-footer">
-                <a href="{{ review.get_absolute_url }}" class="btn btn-outline-danger">詳細</a>
+                <a href="{{ review.get_absolute_url }}" class="btn btn-outline-primary">詳細</a>
             </div>
         </div>
     </div>
@@ -119,7 +119,7 @@
         {% for action in author.accounts_actions.all|slice:":5" %}
         <p class="card-body text-end">
             {{ action.action_content }}
-            <a href="{{ action.action_url }}" class="btn btn-outline-danger">詳細</a>
+            <a href="{{ action.action_url }}" class="btn btn-outline-primary">詳細</a>
         </p>
         {% empty %}
         <p>{{ author.username }}さんの行動履歴はありません。</p>

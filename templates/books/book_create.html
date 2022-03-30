@@ -12,8 +12,8 @@
 		<form method="post">
 			{% csrf_token %}
 			{{ form|crispy }}
-			<input type="submit" value="本を登録" class="btn btn-outline-danger">
-			<a href="#" class="btn btn-outline-danger book-search">ISBNから調べる</a>
+			<input type="submit" value="本を登録" class="btn btn-outline-success">
+			<a href="#" class="btn btn-outline-primary book-search">ISBNから調べる</a>
 		</form>
 	</div>
 	<div class="search-result"></div>
@@ -34,7 +34,7 @@
 				{% endif %}
 			</div>
 			<div class="card-footer">
-				<a href="{{ book.get_absolute_url }}" class="btn btn-outline-danger">詳細</a>
+				<a href="{{ book.get_absolute_url }}" class="btn btn-outline-primary">詳細</a>
 			</div>
 		</div>
 		{% empty %}

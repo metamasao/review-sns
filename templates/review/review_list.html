@@ -16,7 +16,7 @@
                 </p>
             </div>
             <div class="card-footer">
-                <a href="{{ review.get_absolute_url }}" class="btn btn-outline-danger">
+                <a href="{{ review.get_absolute_url }}" class="btn btn-outline-primary">
                     詳細
                 </a>
             </div>
@@ -67,7 +67,7 @@
         {% for action  in following_actions %}
         <div class="card-text text-end">
             <p>{{ action.action_content }}</p>
-            <a href="{{ action.action_url }}" class="btn btn-outline-danger">詳細</a>
+            <a href="{{ action.action_url }}" class="btn btn-outline-primary">詳細</a>
         </div>
         {% empty %}
         <p>フォローしてる人がいない、またはフォローしてる人のアクションがありません。</p>

@@ -26,13 +26,13 @@
         </div>
         <div class="card-footer">
             {% if request.user == review.author %}
-            <a href="{% url 'review:update' review.pk %}" class="btn btn-outline-danger">修正する</a>
-            <a href="{% url 'review:delete' review.pk %}" class="btn btn-outline-danger">削除する</a>
+            <a href="{% url 'review:update' review.pk %}" class="btn btn-outline-primary">修正する</a>
+            <a href="{% url 'review:delete' review.pk %}" class="btn btn-outline-primary">削除する</a>
             {% endif %}
             <a href="#" 
                 data-id="{{ review.id }}" 
                 data-action="{% if request.user in review.review_likes.all %}un{% endif %}like" 
-                class="like btn btn-outline-danger">
+                class="like btn btn-outline-primary">
                     {% if request.user in review.review_likes.all %}
                     いいねをやめる
                     {% else %}
@@ -40,15 +40,21 @@
                     {% endif %}
             </a>
             <span class="badge rounded-pill bg-danger like-count">{{ review.review_likes.all.count }}</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
             <form method="post">
                 {% csrf_token %}
                 {{ form|crispy }}
-                <input type="submit" value="コメントする" class="btn btn-outline-danger">
+                <input type="submit" class="btn btn-outline-primary" value="コメントする">
             </form>
         </div>
     </div>
 
     <div class="card">
+        <h3 class="card-title">コメント一覧</h3>
         {% for comment in review.review_comments.all %}
         <div class="card-body">
             <p class="card-text">
@@ -84,7 +90,7 @@
         {% for action  in following_actions %}
         <div class="card-text text-end">
             <p>{{ action.action_content }}</p>
-            <a href="{{ action.action_url }}" class="btn btn-outline-danger">詳細</a>
+            <a href="{{ action.action_url }}" class="btn btn-outline-primary">詳細</a>
         </div>
         {% endfor %}
     </div>
