@@ -25,7 +25,7 @@
 					<p>{{ book.author }}</p>
 					<p>isbn: {{ book.isbn }}</p>
 					{% if book.category %}
-					<p>カテゴリー: <a href="{% url 'books:home' book.category.id %}">{{ book.category }}</a></p>
+					<p>カテゴリー: <a href="{% url 'books:category-home' book.category.id %}">{{ book.category }}</a></p>
 					{% endif %}
 				</div>
 				<div class="card-footer">
@@ -68,7 +68,7 @@
 		<p class="card-header">カテゴリー</p>
 		<div class="card-body text-end">
 			{% for category in category_queryset %}
-			<p><a href="{% url 'books:home' category.id %}">{{ category.category }}</a>
+			<p><a href="{% url 'books:category-home' category.id %}">{{ category.category }}</a>
 				<span class="badge rounded-pill bg-primary">
 					{{ category.related_books_counts }}
 				</span>

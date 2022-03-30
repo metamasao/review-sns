@@ -30,7 +30,7 @@
 					<img src="{{ book.image_url }}" alt="None">
 				</div>
 				{% if book.category %}
-				<p>カテゴリー: <a href="{% url 'books:home' book.category.id %}">{{ book.category }}</a></p>
+				<p>カテゴリー: <a href="{% url 'books:category-home' book.category.id %}">{{ book.category }}</a></p>
 				{% endif %}
 			</div>
 			<div class="card-footer">
