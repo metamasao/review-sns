@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Count
 from django.conf import settings
 from django.urls import reverse
+from django.urls import reverse_lazy
 from django.utils import timezone
     
 
@@ -33,7 +34,7 @@ class UUIDURLModel(UUIDModel):
 
     def get_absolute_url(self):
         url_kwargs = self.get_url_kwargs(pk=self.id) 
-        return reverse(self.url_name, kwargs=url_kwargs)
+        return reverse_lazy(self.url_name, kwargs=url_kwargs)
 
 
 class AuthorModel(models.Model):
