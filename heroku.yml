@@ -3,7 +3,7 @@ setup:
   - plan: heroku-postgresql
 build:
   docker:
-    web: Docker
+    web: Dockerfile
 release:
   image: web
   command:
