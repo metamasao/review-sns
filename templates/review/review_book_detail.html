@@ -83,7 +83,9 @@
 			<div class="text-center">
 				<img src="{{ book.image_url }}" alt="None">
 			</div>
+			{% if book.category %}
 			<p>カテゴリー: <a href="{% url 'books:category-home' book.category.id %}">{{ book.category }}</a></p>
+			{% endif %}
 		</div>
 		<div class="card-footer">
 			<a href="{{ book.get_absolute_url }}" class="btn btn-outline-primary">詳細</a>
