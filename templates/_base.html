@@ -37,7 +37,7 @@
 						<a href="{% url 'review:list' %}" class="nav-link {% if nav_page == 'review' %}active{% endif %} ">レビュー一覧</a>
 					</li>
 					<li class="nav-item">
-						<form method="get" action="{% url 'books:home' %}" class="d-flex">
+						<form method="get" action="{% url 'books:search' %}" class="d-flex">
 							<input class="form-control me-2" name="query" type="search" placeholder="タイトルまたは著者名" aria-label="Search">
 							<input type="submit" value="検索" class="btn btn-outline-success">
 						</form>
