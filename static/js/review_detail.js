@@ -26,6 +26,9 @@ likeButton.addEventListener('click', (event) => {
             }
         }
     }).catch(error => {
-        console.log(error);
+        const likeText = document.querySelector('div.like-text');
+        const para = document.createElement('p');
+        para.textContent = '接続に問題が発生し、いいねができません。後ほど再度お試しください。';
+        likeText.appendChild(para);
     })
 });

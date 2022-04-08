@@ -68,7 +68,7 @@ class Book(TimeStampModel, UUIDURLModel):
             return response_data.get('summary') if response_data is not None else None
         except requests.exceptions.HTTPError as e:
             logger.exception(e)
-            logger.warning('Connecting to openbd fails.')
+            logger.error('Connecting to openbd fails.')
             return None
 
     def save(self, *args, **kwargs):

@@ -26,6 +26,9 @@ follow.addEventListener('click', (event) => {
             }
         }
     }).catch(err => {
-        console.log(err);
+        const followText= document.querySelector('div.follow-text');
+        const para = document.createElement('p');
+        para.textContent = '接続に問題が発生しフォローできません。後ほど再度お試しください。'
+        followText.appendChild(para);
     })
 });

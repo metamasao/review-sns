@@ -12,6 +12,7 @@ environs = {version = "==8.0.0", extras = ["django"]}
 whitenoise = "==5.1.0"
 gunicorn = "==20.0.4"
 coverage = "*"
+sentry-sdk = "*"
 
 [dev-packages]
 

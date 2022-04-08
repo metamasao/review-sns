@@ -1,9 +1,17 @@
 from pathlib import Path
 from environs import Env
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 env = Env()
 env.read_env()
 
+sentry_sdk.init(
+    dsn=env('DJANGO_SENTRY_DSN'),
+    integrations=[DjangoIntegration(),],
+    traces_sample_rate=1.0,
+    send_default_pii=True
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -152,16 +160,10 @@ LOGGING = {
     },
     'handlers': {
         'console':{
-            'level': env.str('DJANGO_LOG_LEVEL', default='WARNING'),
+            'level': env.str('DJANGO_LOG_LEVEL', default='ERROR'),
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         },
-        'file': {
-            'level': env.str('DJANGO_LOG_LEVEL', default='WARNING'),
-            'class': 'logging.FileHandler',
-            'formatter': 'verbose',
-            'filename': 'debug.log'
-        }
     },
     'loggers':{
         '':{

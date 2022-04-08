@@ -10,6 +10,8 @@ services:
     ports:
       - 8000:8000
     environment:
+      # for local development
+      - "DJANGO_SENTRY_DSN=https://8d3987495aa64359b9afb3bf2709c46c@o1188118.ingest.sentry.io/6314763"
       - "DJANGO_SECRET_KEY=2p3)21mos^s=)cyj6r$$85j&)@=)puq35zj96n6(^7j%^x^(@xe"
       - "DJANGO_ALLOWED_HOST=127.0.0.1,localhost,testserver"
       - "DJANGO_DEBUG=True"

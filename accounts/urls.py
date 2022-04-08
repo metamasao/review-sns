@@ -11,6 +11,4 @@ urlpatterns = [
     path('password/change-done/', PasswordChangeDoneView.as_view(), name='password_change_done'),
     path('<uuid:pk>/update/', UserUpdateView.as_view(), name="update"),
     path('follow/', UserFollowView.as_view(), name='follow'),
-    # path('follow/', )
-    # path('user-detail/')
 ]

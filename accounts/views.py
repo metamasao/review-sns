@@ -4,6 +4,7 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
+from django.shortcuts import redirect
 
 from .forms import CustomUserCreationForm
 from .models import CustomUser, Follow
