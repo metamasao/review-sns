@@ -1,3 +1,6 @@
+"""
+ThinViewにするためにできる限り必要なロジックをここに記述しています。
+"""
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -5,7 +8,18 @@ from books.models import Book
 from core.behaviors import UUIDURLModel, TimeStampModel, AuthorModel
 
 
-class CustomUser(AbstractUser, UUIDURLModel):    
+class CustomUser(AbstractUser, UUIDURLModel):
+    """
+    DjangoのAbstractUser, coreパッケージの抽象モデルを継承しています。
+    
+    主な属性の説明
+    --------
+    following: 同一のモデルへの多対多関係
+    user_likes: 「いいね」に関するレビューへの多対多関係
+    review_reivews: 著者としてレビューへの一対多関係
+    review_comments: コメントへの一対多関係
+
+    """
     following = models.ManyToManyField(
         'self',
         through='Follow',
@@ -43,8 +57,15 @@ class CustomUser(AbstractUser, UUIDURLModel):
 
 
 class FollowManager(models.Manager):
-
+    """
+    CustomUserモデルでのfollowingに対するマネージャーモデル。
+    """
     def create_follow(self, user_from, user_to):
+        """
+        フォローする際に誰が誰をフォローしたのかをActionモデルに保存します。
+        ※同じようなLikeモデルとLikeマネージャーモデルがあるので、
+        これと併せてもう少し抽象化し、モデルを作成すべき
+        """
         following = self.model(
             user_from=user_from,
             user_to=user_to
@@ -55,7 +76,10 @@ class FollowManager(models.Manager):
 
 
 class Follow(TimeStampModel):
-
+    """
+    CustomUserモデルのfollowingの中間モデル。この中間モデルを使うことで、
+    詳細にモデルを定義できます。
+    """
     user_from = models.ForeignKey(
         CustomUser,
         related_name='rel_from_set',
@@ -76,12 +100,21 @@ class Follow(TimeStampModel):
 
 
 class ActionManager(models.Manager):
-
+    """
+    Actionモデルのマネージャーモデル。ユーザーに応じたアクションを返すメソッド、
+    具体的なアクションを記述するメソッドを定義しています。
+    """
     def get_following_actions(self, request_user):
+        """
+        request_userがフォローしているひとのフォローやいいねといったアクションを返す。
+        """
         user_following = request_user.following.all()
         return self.filter(author__in=user_following)
 
     def get_action_content(self, user, instance):
+        """
+        具体的なアクションの内容を条件に応して記述する。
+        """
         content = None
         if isinstance(instance, CustomUser):
             name = instance.username
@@ -92,6 +125,9 @@ class ActionManager(models.Manager):
         return content
 
     def create_action(self, user, instance):
+        """
+        アクションの内容とその対象インスタンスのurlを取得しモデルとして保存する。
+        """
         content = self.get_action_content(user, instance)
         instance_url = instance.get_absolute_url()
         
@@ -104,7 +140,14 @@ class ActionManager(models.Manager):
         return action
 
 
-class Action(TimeStampModel, AuthorModel):    
+class Action(TimeStampModel, AuthorModel):
+    """
+    CustomUserモデルのユーザーのAction(行動)を記録するモデル。
+    DjangoのGenericForeginKeyを利用して簡明なモデルを作ることもできますが、
+    ベストプラクティスに反するので、していません。
+    参照: Daniel Roy GreenField, Audrey Roy Greenfield 
+    'Two Scoops of Django 1.11' ch.6 4.6 'Try to Avoid Using Generic Relations'
+    """
     action_content = models.CharField(max_length=512)
     action_url = models.URLField()
 

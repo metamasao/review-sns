@@ -122,7 +122,7 @@ class PublishModel(models.Model):
 
 class PublishManager(models.Manager):
     """
-    レビューといった記事などのモデルでのマネージャーモデル。
+    レビューや記事などのモデルでのマネージャーモデル。
     """
     def public(self):
         return self.filter(status='public')
