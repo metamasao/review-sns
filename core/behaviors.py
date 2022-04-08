@@ -66,7 +66,7 @@ class AuthorModel(models.Model):
 
 class ActiveModel(models.Model):
     """
-    必要に応じて悪質なコメントやアカウントなど利用を制限する抽象モデル。
+    必要に応じて悪質なインスタンスの利用を制限する抽象モデル。
     """
     is_active = models.BooleanField(default=True)
 
@@ -76,7 +76,7 @@ class ActiveModel(models.Model):
 
 class TimeStampModel(models.Model):
     """
-    インスタンスの作成日時や更新日時を必要とするモデルに対する抽象モデル。
+    インスタンスの作成日時や更新日時を記録する抽象モデル。
     複数の抽象クラスを継承する場合は、まず初めにこのクラスを継承する、
     もしくはMetaクラスで明示的に定義してください。
     参照: https://docs.djangoproject.com/en/4.0/topics/db/models/#model-inheritance-1

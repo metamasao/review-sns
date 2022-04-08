@@ -4,7 +4,6 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
-from django.shortcuts import redirect
 
 from .forms import CustomUserCreationForm
 from .models import CustomUser, Follow
@@ -18,6 +17,7 @@ class SignupView(generic.CreateView):
     template_name = 'registration/signup.html'
 
     def form_valid(self, form):
+        # formが妥当であるときにrequest.userをログインさせる。
         valid = super().form_valid(form)
         login(self.request, self.object)
         return valid
@@ -30,6 +30,7 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
     login_url = 'accounts:login'
 
     def test_func(self):
+        # request.userとuserが異なる場合403を返す。
         user = self.get_object()
         return self.request.user == user
 
@@ -42,6 +43,7 @@ class UserFollowView(AjaxPostRequiredMixin, generic.View):
         logger.debug(user_id)
         logger.debug(action)
 
+        # user_idに対応するインスタンスがないときに404を返す。
         user_to = get_object_or_404(CustomUser, id=user_id)        
         user_from = self.request.user
 

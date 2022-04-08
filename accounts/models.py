@@ -102,7 +102,7 @@ class Follow(TimeStampModel):
 class ActionManager(models.Manager):
     """
     Actionモデルのマネージャーモデル。ユーザーに応じたアクションを返すメソッド、
-    具体的なアクションを記述するメソッドを定義しています。
+    具体的なアクションを記述しモデルとして保存するメソッドを定義しています。
     """
     def get_following_actions(self, request_user):
         """
