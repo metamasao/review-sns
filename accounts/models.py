@@ -12,8 +12,8 @@ class CustomUser(AbstractUser, UUIDURLModel):
     """
     DjangoのAbstractUser, coreパッケージの抽象モデルを継承しています。
     
-    主な属性の説明
-    --------
+    主な属性
+    ----------
     following: 同一のモデルへの多対多関係
     user_likes: 「いいね」に関するレビューへの多対多関係
     review_reivews: 著者としてレビューへの一対多関係

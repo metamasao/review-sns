@@ -9,18 +9,31 @@ logger = logging.getLogger(__name__)
 
 
 class CategoryManager(models.Manager):
-
+    """
+    カテゴリーマネージャー
+    """
     def order_by_the_number_of_books(self):
+        """
+        各カテゴリーに登録された本の総数を返す。
+        """
         queryset = self.annotate(related_books_counts=Count('books_books'))
         return queryset.order_by('-related_books_counts')
 
 
 class BookManager(models.Manager):
-
+    """
+    ブックマネージャー
+    """
     def get_same_category_books(self, instance, index=5):
+        """
+        各本のカテゴリーと同じカテゴリーの本を返す。ただし、instanceは除く。
+        """
         return self.filter(category=instance.category).exclude(id=instance.id)[:index]
 
     def order_by_the_number_of_reviews(self):
+        """
+        各本の公開レビューの総数から降順に本のクエリセットを返す。
+        """
         queryset = self.filter(
             review_reviews__status='public'
             ).annotate(related_reviews_counts=Count('review_reviews'))
@@ -28,6 +41,14 @@ class BookManager(models.Manager):
 
 
 class Category(UUIDModel):
+    """
+    カテゴリーモデル。
+
+    主な属性の説明
+    ----------
+    books_books: Bookモデルとの一対多関係
+    マネージャーはCategoryManagerを使用
+    """
     category = models.CharField(max_length=31, unique=True)
 
     objects = CategoryManager()
@@ -37,6 +58,10 @@ class Category(UUIDModel):
 
 
 class Book(TimeStampModel, UUIDURLModel):
+    """
+    Bookモデル
+    本の情報の取得に外部APIのOpenBDを使用しています。
+    """
     author = models.CharField(max_length=255, blank=True)
     title = models.CharField(max_length=255, unique=True)
     image_url = models.URLField(blank=True)
@@ -59,6 +84,10 @@ class Book(TimeStampModel, UUIDURLModel):
         return self.title
 
     def get_book_info(self):
+        """
+        formで入力された一意のisbnをもとにOpenBDからデータを取得する。
+        レスポンスが200台以外のエラーであれば、Sentryがログを取得しメールにて通知する。
+        """
         api_url = f'https://api.openbd.jp/v1/get?isbn={self.isbn}'
         try:
             logger.info('Attempting to connect to openbd.')

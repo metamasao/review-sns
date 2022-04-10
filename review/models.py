@@ -16,15 +16,26 @@ from core.behaviors import (
 
 
 class ReviewManager(PublishManager):
-
+    """
+    Reviewモデルのマネージャー
+    """
     def order_by_the_number_of_likes(self):
+        """
+        各レビューのLikeの総数に基づいて降順にクエリセットを返す。
+        """
         queryset = self.filter(status='public').annotate(likes_counts=Count('review_likes'))
         return queryset.order_by('-likes_counts')
 
 
 class LikeManager(models.Manager):
-
+    """
+    Likeモデルのマネージャー
+    ユーザーのアクションも記録する。
+    """
     def create_like(self, user, review):
+        """
+        Likeのインスタンスを生成し保存、ユーザーのアクション保存する。
+        """
         like = self.model(user=user, review=review)
         like.save()
         Action.objects.create_action(user, review)
@@ -38,6 +49,17 @@ class Review(
     ActiveModel,
     PublishModel,
 ):
+    """
+    Reviewモデル
+    Bookモデルについてのレビューを保存します。
+
+    主な属性
+    ----------
+    author: レビューの著者、CustomUserモデルへの多対一関係
+    related_book: レビューする本、Bookモデルへの多対一関係
+    next_book: 次にお勧めする本、Bookモデルへへの多対一関係
+    recommending_text: 次にお勧めする本への紹介文
+    """
     related_book = models.ForeignKey(
         Book,
         related_name='review_reviews',
@@ -73,12 +95,18 @@ class Review(
 
     @property
     def modified_after_published(self):
+        """
+        公開後に記事内容を更新した場合にTrueを返す。
+        """
         if self.published is None:
             return None
         return True if self.modified - self.published > datetime.timedelta(minutes=1) else False
 
 
 class Like(TimeStampModel):
+    """
+    CustomUserモデルがReviewモデルをLikeするときの中間モデル。
+    """
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
@@ -95,6 +123,13 @@ class Like(TimeStampModel):
 
 
 class Comment(TimeStampModel, AuthorModel, ActiveModel):
+    """
+    Reviewモデルに対するCommentモデル。
+
+    主な属性
+    ----------
+    author: コメントの投稿者、CustomUserモデルへの多対一関係
+    """
     review = models.ForeignKey(
         Review,
         related_name='review_comments',

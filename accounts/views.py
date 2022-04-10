@@ -13,6 +13,9 @@ logger = logging.getLogger(__name__)
 
 
 class SignupView(generic.CreateView):
+    """
+    会員登録view
+    """
     form_class = CustomUserCreationForm
     template_name = 'registration/signup.html'
 
@@ -24,6 +27,9 @@ class SignupView(generic.CreateView):
 
 
 class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
+    """
+    自己紹介文を含むプロフィール更新view
+    """
     model = CustomUser
     fields = ('username', 'email', 'profile')
     template_name = 'accounts/user_update.html'
@@ -35,8 +41,12 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
         return self.request.user == user
 
 
-class UserFollowView(AjaxPostRequiredMixin, generic.View):
-
+class UserFollowView(LoginRequiredMixin, AjaxPostRequiredMixin, generic.View):
+    """
+    非同期通信によるユーザーフォローまたはアンフォローview
+    core.viewmixinよりAjaxPostRequiredMixinを継承し、
+    リクエストが非同期通信ではないorリクエストメソッドがPostではない場合に400を返します。
+    """
     def post(self, request, *args, **kwargs):
         user_id = request.POST.get('id')
         action = request.POST.get('action')

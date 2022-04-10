@@ -15,7 +15,9 @@ from .forms import ReviewModelForm, CommentForm
 
 
 class ReviewSidebarMixin:
-
+    """
+    Review.viewsでのサイドバーのコンテンツを追加するMix-in
+    """
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['popular_reviews'] = Review.objects.order_by_the_number_of_likes()[:5]
@@ -24,6 +26,9 @@ class ReviewSidebarMixin:
 
 
 class ReviewDetailMixin:
+    """
+    特定のインスタンスのListViewに対して使用するMix-in
+    """
     detail_model = None
 
     def get(self, request, *args, **kwargs):
@@ -36,6 +41,9 @@ class ReviewDetailMixin:
 
 
 class ReviewListView(LoginRequiredMixin, ReviewSidebarMixin, NavPageMixin, generic.ListView):
+    """
+    公開されたレビュー一覧のview
+    """
     queryset = Review.objects.public()
     template_name = 'review/review_list.html'
     context_object_name = 'reviews'
@@ -44,6 +52,9 @@ class ReviewListView(LoginRequiredMixin, ReviewSidebarMixin, NavPageMixin, gener
 
 
 class ReviewAuthorDetailView(LoginRequiredMixin, ReviewDetailMixin, generic.ListView):
+    """
+    レビューの著者に基づくレビュー一覧のview
+    """
     model = Review
     detail_model = get_user_model()
     template_name = 'review/review_author_detail.html'
@@ -51,12 +62,20 @@ class ReviewAuthorDetailView(LoginRequiredMixin, ReviewDetailMixin, generic.List
     paginate_by = 10
 
     def get_queryset(self):
+        """
+        リクエストしたユーザーがレビューの著者と同じであれば
+        下書きのレビューも含めてクエリセットを返す。
+        そうでなければ、公開されたクエリセットを返す。
+        """
         queryset = super().get_queryset().filter(author=self.detail_object)
         if self.detail_object != self.request.user:
             queryset = queryset.filter(status='public')
         return queryset
 
     def get_context_data(self, *args, **kwargs):
+        """
+        著者の情報などを追加
+        """
         context = super().get_context_data(*args, **kwargs)
         context['author'] = self.detail_object
         context['author_popular_reviews'] = Review.objects.order_by_the_number_of_likes().filter(
@@ -66,6 +85,9 @@ class ReviewAuthorDetailView(LoginRequiredMixin, ReviewDetailMixin, generic.List
 
 
 class ReviewBookDetailView(LoginRequiredMixin, ReviewDetailMixin, generic.ListView):
+    """
+    特定の本に基づいてレビュー一覧を返すview
+    """
     queryset = Review.objects.public()
     detail_model = Book
     template_name = 'review/review_book_detail.html'
@@ -84,10 +106,16 @@ class ReviewBookDetailView(LoginRequiredMixin, ReviewDetailMixin, generic.ListVi
 
 
 class ReviewCreateView(LoginRequiredMixin, ReviewSidebarMixin, AuthorMixin, generic.CreateView):
+    """
+    レビューを作成するview
+    """
     form_class = ReviewModelForm
     template_name = 'review/review_create.html'
 
     def form_valid(self, form):
+        """
+        検証済みの入力されたデータから必要なデータを取得しインスタンスの属性に追加
+        """
         next_book = get_object_or_404(Book, isbn=form.cleaned_data.get('isbn'))
         related_book = get_object_or_404(Book,pk=self.kwargs.get('pk'))
         form.instance.related_book = related_book
@@ -96,28 +124,45 @@ class ReviewCreateView(LoginRequiredMixin, ReviewSidebarMixin, AuthorMixin, gene
 
 
 class ReviewUpdateView(LoginRequiredMixin, CustomUserPassTestMixin, ReviewSidebarMixin, generic.UpdateView):
+    """
+    レビューの更新view
+    """
     model = Review
     fields = ('title', 'body', 'recommending_text',)
     template_name = 'review/review_update.html'
 
 
 class ReviewDeleteView(LoginRequiredMixin, CustomUserPassTestMixin, ReviewSidebarMixin, generic.DeleteView):
+    """
+    レビューの削除view
+    """
     model = Review
     template_name = 'review/review_delete.html'
     success_url = reverse_lazy('books:home')
 
 
 class ReviewDetailGetView(ReviewSidebarMixin, generic.DetailView):
+    """
+    レビューの詳細ページへのリクエストメソッドがGETの時のview。
+    この時にレビューへのコメントフォームを追加する。
+    """
     model = Review
     template_name = 'review/review_detail.html'
 
     def get_context_data(self, **kwargs):
+        """
+        CommentFormを追加。
+        リクエストメソッドがPOSTの時にこのフォームが使用される。
+        """
         context = super().get_context_data(**kwargs)
         context['form']  = CommentForm()
         return context   
 
 
 class ReviewDetailPostView(SingleObjectMixin, ReviewSidebarMixin, FormView):
+    """
+    レビューの詳細ページへのリクエストメソッドがPOSTの時のview
+    """
     model = Review
     form_class = CommentForm
     template_name = 'review/review_detail.html'
@@ -137,7 +182,12 @@ class ReviewDetailPostView(SingleObjectMixin, ReviewSidebarMixin, FormView):
 
 
 class ReviewDetailView(LoginRequiredMixin, generic.View):
-
+    """
+    レビューの詳細ページへのview
+    リクエストのメソッドがGetかPostに応じて異なるビューを呼び出す。
+    Get -> ReviewDetailGetView
+    Post - > ReviewDetailPostView
+    """
     def get(self, request, *args, **kwargs):
         view = ReviewDetailGetView.as_view()
         return view(request, *args, **kwargs)
@@ -147,8 +197,10 @@ class ReviewDetailView(LoginRequiredMixin, generic.View):
         return view(request, *args, **kwargs)
 
 
-class LikeView(AjaxPostRequiredMixin, generic.View):
-    
+class LikeView(LoginRequiredMixin, AjaxPostRequiredMixin, generic.View):
+    """
+    レビューのLikeするときのview
+    """
     def post(self, request, *args, **kwargs):
         review_id = request.POST.get('id')
         action = request.POST.get('action')

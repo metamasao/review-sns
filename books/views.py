@@ -11,6 +11,9 @@ from review.models import Review
 
 
 class BookListHomeView(NavPageMixin, SearchResultMixin, generic.ListView):
+    """
+    '/'と'/search/'に対するview
+    """
     model = Book
     template_name = 'books/home.html'
     context_object_name = 'books'
@@ -18,6 +21,9 @@ class BookListHomeView(NavPageMixin, SearchResultMixin, generic.ListView):
     nav_page = 'home'
 
     def get_queryset(self):
+        """
+        カテゴリーに応じてクエリセットを返す。
+        """
         queryset = super().get_queryset()
         category_pk = self.kwargs.get('pk')
         if category_pk:
@@ -26,6 +32,9 @@ class BookListHomeView(NavPageMixin, SearchResultMixin, generic.ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        """
+        sidebarのコンテンツを追加
+        """
         context = super().get_context_data(**kwargs)
         category_queryset = Category.objects.order_by_the_number_of_books()
         order_by_the_number_of_reviews = Book.objects.order_by_the_number_of_reviews()[:5]
@@ -37,6 +46,11 @@ class BookListHomeView(NavPageMixin, SearchResultMixin, generic.ListView):
         
 
 class BookCreateView(LoginRequiredMixin, NavPageMixin, generic.CreateView):
+    """
+    '/create/'
+    一意のisbnから本を登録するview
+    form_classにカスタムフォームを使用しています。
+    """
     form_class = BookForm
     template_name = 'books/book_create.html'
     nav_page = 'create'
