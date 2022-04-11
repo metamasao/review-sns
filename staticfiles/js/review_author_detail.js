@@ -10,7 +10,7 @@ follow.addEventListener('click', (event) => {
     axios.defaults.headers['x-requested-with'] = 'XMLHttpRequest';
     axios({
         method: 'post',
-        url: 'http://127.0.0.1:8000/accounts/follow/',
+        url: 'https://metamasao-review-sns.herokuapp.com/accounts/follow/',
         data: `id=${userId}&action=${previousAction}`
     }).then(res => {
         if (res.data.status === 'ok') {
@@ -26,6 +26,9 @@ follow.addEventListener('click', (event) => {
             }
         }
     }).catch(err => {
-        console.log(err);
+        const followText= document.querySelector('div.follow-text');
+        const para = document.createElement('p');
+        para.textContent = '接続に問題が発生しフォローできません。後ほど再度お試しください。'
+        followText.appendChild(para);
     })
 });

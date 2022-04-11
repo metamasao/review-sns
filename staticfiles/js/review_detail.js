@@ -10,7 +10,7 @@ likeButton.addEventListener('click', (event) => {
     axios.defaults.headers['x-requested-with'] = 'XMLHttpRequest';
     axios({
         method: 'post',
-        url: 'http://127.0.0.1:8000/review/like/',
+        url: 'https://metamasao-review-sns.herokuapp.com/review/like/',
         data: `id=${reviewId}&action=${previousLike}`
     }).then(res => {
         if (res.data.status === 'ok') {
@@ -26,6 +26,9 @@ likeButton.addEventListener('click', (event) => {
             }
         }
     }).catch(error => {
-        console.log(error);
+        const likeText = document.querySelector('div.like-text');
+        const para = document.createElement('p');
+        para.textContent = '接続に問題が発生し、いいねができません。後ほど再度お試しください。';
+        likeText.appendChild(para);
     })
 });
