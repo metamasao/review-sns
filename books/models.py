@@ -14,7 +14,7 @@ class CategoryManager(models.Manager):
     """
     def order_by_the_number_of_books(self):
         """
-        各カテゴリーに登録された本の総数を返す。
+        各カテゴリーに登録された本の総数に基づいて降順でクエリセットを返す。
         """
         queryset = self.annotate(related_books_counts=Count('books_books'))
         return queryset.order_by('-related_books_counts')

@@ -199,7 +199,7 @@ class ReviewDetailView(LoginRequiredMixin, generic.View):
 
 class LikeView(LoginRequiredMixin, AjaxPostRequiredMixin, generic.View):
     """
-    レビューのLikeするときのview
+    レビューをLikeするときのview
     """
     def post(self, request, *args, **kwargs):
         review_id = request.POST.get('id')

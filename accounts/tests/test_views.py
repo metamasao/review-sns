@@ -31,6 +31,11 @@ class AccountsViewTest(TestCase):
         )
 
     def test_signup_view_post(self):
+        """
+        /accounts/signup/
+        リクエストメソッドがPostの場合に、SignUpViewで
+        アカウントの登録ができてるかのテスト
+        """
         request = self.factory.post(
             '/accounts/signup/', 
             data={
@@ -47,6 +52,10 @@ class AccountsViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_signup_view_get(self):
+        """
+        /accounts/signup/
+        リクエストメソッドがGETの時のSignupViewのテスト
+        """
         request = self.factory.get('/accounts/signup/')
         response = SignupView.as_view()(request)
         self.assertEqual(response.status_code, 200)
