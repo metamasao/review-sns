@@ -18,9 +18,10 @@
             </h4>
             <p class="card-text">
                 {{ review.body|linebreaks }}
-            </p>            
+            </p>
+            <hr>
             <span>次の本: <a href="{{ review.next_book.get_absolute_url }}">{{ review.next_book.title }}</a></span>
-            <p class="card-text">
+            <p class="card-text comment">
                 {{ review.recommending_text }}
             </p>
         </div>
