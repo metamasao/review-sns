@@ -6,12 +6,16 @@
 
 {% block content %}
 
-    <h2>レビューを作成する。</h2>
+    <h2>レビューの作成</h2>
+
+    <p>
+        「isbn」には次にお勧めする本のisbnを入力してください。
+    </p>
 
     <form method="post">
         {% csrf_token %}
         {{ form|crispy }}
-        <input type="submit" value="Create" class="btn btn-outline-success">
+        <input type="submit" value="レビューを投稿する" class="btn btn-outline-success">
     </form>
 {% endblock content %}
 
