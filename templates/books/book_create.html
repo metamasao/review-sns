@@ -7,7 +7,9 @@
 {% block content %}
 
 	<h2>本の登録</h2>
-
+	<p>	タイトル、ISBN、カテゴリーを選択してください。</p>
+	<p>本サイトはOpenBDのAPIを利用しており、一意なISBNからタイトルや詳細なデータを取得しています。</p>
+	<p>ISBNに対応する本がOpenBDに存在すれば、そちらのデータを使用します。</p>
 	<div class="card">
 		<form method="post">
 			{% csrf_token %}
