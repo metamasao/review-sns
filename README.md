@@ -77,11 +77,11 @@ Test以外ではできる限りDRYに従い、ModelやViewを作るときはFat 
 
 ##### 書籍
 
-- 横瀬　明仁、『現場で使えるDJANGOの教科書　<実践編>』
-- Vincent, Williams S. , "Django for Beginners"
-- Vincent, Williams S. , "Django for Professionals"
-- Mele, Antonio, "Django 3 By Example"(第6章まで読みました)
-- Greenfield, Daniel Roy, and Greenfield, Audrey Roy, "Two Scoops of Django 1.11"
+- [横瀬　明仁、『現場で使えるDJANGOの教科書　<実践編>』](https://booth.pm/ja/items/1030026)
+- [Vincent, Williams S. , "Django for Beginners"](https://djangoforbeginners.com/)
+- [Vincent, Williams S. , "Django for Professionals"](https://djangoforprofessionals.com/)
+- [Mele, Antonio, "Django 3 By Example"](https://www.packtpub.com/product/django-3-by-example-third-edition/9781838981952)
+- [Greenfield, Daniel Roy, and Greenfield, Audrey Roy, "Two Scoops of Django"](https://www.feldroy.com/books/two-scoops-of-django-3-x)
 
 ##### ネット上の記事
 
@@ -101,13 +101,13 @@ Test以外ではできる限りDRYに従い、ModelやViewを作るときはFat 
 #### webに関する基本的な知識とフロントエンド
 webに関する基本的なことについては
 
-- 小林恭平、坂本陽著、佐々木拓郎監修　『この一冊で全部わかるWeb技術の基本』　SB Creative
+- [小林恭平、坂本陽著、佐々木拓郎監修　『この一冊で全部わかるWeb技術の基本』　SB Creative](https://www.sbcr.jp/product/4797388817/)
 
 を読み勉強しました。
 
 HTML, CSS, Javascriptの書籍に関しては
 
-- たにぐちまこと、『HTML&CSS, JavaScriptのきほんのきほん』、マイナビ出版
+- [たにぐちまこと、『HTML&CSS, JavaScriptのきほんのきほん』、マイナビ出版](https://book.mynavi.jp/ec/products/detail/id=65861)
 
 を読みました。変数宣言する際にvarを使っていることが気になりますが、最後にはJQueryやVueなどのライブラリも紹介しており勉強になりました(ちなみに、本アプリケーションではデザインに関しては基本的にBootstrapに依拠しており、非同期通信のためだけに読み込みの遅いJQueryを使うのはデメリットが大きいと思い、axiosを使いました)。
 
@@ -119,23 +119,57 @@ React.jsに関しては公式ドキュメントのMain Conceptを一通り読ん
 
 英語圏ではDjangoは日本に比べて人気があり、使用している人口も多いことからなるべく早く洋書で定評のありそうな本を探しました。以下、参考になった本です。
 
-- 横瀬　明仁、『現場で使えるDJANGOの教科書　<基本編>』
+- [横瀬明仁、『現場で使えるDJANGOの教科書　<基本編>』](https://booth.pm/ja/items/1308742)
 
 この本はチュートリアル形式でアプリを作るような入門書ではなく、Djangoを構成するview, model, middlewareなどについて基本的な知識を解説する本で、勉強になりました。また、参照している本や記事などにもきちんと言及しており、ここから次に何を読むか決めました。次に読んだのは
 
-- Vincent, Williams S. , "Django for Beginners"
-- Vincent, Williams S. , "Django for Professionals"
+- [Vincent, Williams S. , "Django for Beginners"](https://djangoforbeginners.com/)
+- [Vincent, Williams S. , "Django for Professionals"](https://djangoforprofessionals.com/)
 
 です。どちらもテストについて充実しており、ベストプラクティスを強調していることが良かったです。前者は、簡単なアプリケーションから始めてもうちょっと本格的なアプリケーション構築までしますが、各アプリケーションでHerokuにデプロイすることで、デプロイメントする際の心理的コストを取り除く点が、後者は、開発環境と本番環境での違いを確認したうえでのDockerの導入、信頼できるThird Partyの積極活用、セキュリティの観点から気を付けるべきことなどがプロの視点から説明されている点がとりわけ良かったです。また著者のブログも参考にしています。
 
-- Mele, Antonio, "Django 3 By Example"
+- [Mele, Antonio, "Django 3 By Example"](https://www.packtpub.com/product/django-3-by-example-third-edition/9781838981952)
 
-この本はユーザーフォローなどの多対多関係の構築やそれを非同期通信を用いて構築する本格的なアプリケーションを作りたいと思い購入しました。しかし、ベストプラクティスに反するなど著者の癖が強い、他の文献への参照がないこと、思った以上間違いが多いことから、第6章まで読み以降は読んでいません。それでも勉強になる点ありました。
+この本はユーザーフォローなどの多対多関係の構築やそれを非同期通信を用いて構築する本格的なアプリケーションを作りたいと思い購入しました。しかし、ベストプラクティスに反するなど著者の癖が強い、他の文献への参照がないこと、第6章まで読み以降は読んでいません。それでも勉強になる点ありました。
 
-次の本はとても勉強になりました。
+次の本はとてもとても勉強になりました。
 
-- Greenfield, Daniel Roy, and Greenfield, Audrey Roy, "Two Scoops of Django 1.11"
+- [Greenfield, Daniel Roy, and Greenfield, Audrey Roy, "Two Scoops of Django"](https://www.feldroy.com/books/two-scoops-of-django-3-x)
 
-少し古いですが、参照してる本や記事がとても多いことに加えて、設計思想といった抽象的観点からどのようにアプリケーションを構築すべきかだけではなく、Djangoの各機能が実践的観点から幅広く紹介されており、本当に勉強になりました。
+私が読んだのは1.11なので少し古いですが、参照してる本や記事がとても多いことに加えて、設計思想といった抽象的観点からどのようにアプリケーションを構築すべきかだけではなく、Djangoの各機能が実践的観点から幅広く紹介されており、本当に勉強になりました。
+
+また次の本も写経しながら読みましたが、
+
+- [Vincent, Williams S. , "Django for APIs"](https://djangoforapis.com/)
+
+ちょっと前なので少し忘れているところもあるとおもいます。
 
 #### 今後勉強したいこと
+
+諸事情により、今回のアプリケーション作成で以下のようなことができませんでした。
+
+- AWSのようなIaaSを利用してのデプロイ
+- Amazon S3などのクラウドストレージやCloudFrontなどのCDNを利用した静的コンテンツ及びユーザアップロードコンテンツの取り扱い(Herokuでも同じサーバーでユーザーアップロードコンテンツを取り扱うことはできますが、これはセキュリティリスクが大きいのでしていません。例えば、本当はhtmlファイルなのにContent-Type(MIMEタイプ)がpngであれば、Pillowを用いたDjangoの検証をパスしてしまい、そのファイルが悪質なスクリプトを含んでいる場合など。この問題はAmazon S3のようなクラウドストレージを利用して、HTTPヘッダーフィールドのCSPを有効にすれば対処できますが)。
+
+今後はこういったこともAWSの入門書やLinuxコマンド入門書を読んで取り組んでいきたいと思っています。以下は、個人的な関心からです。
+
+今回のアプリケーション作成するにあたって、クラスの多重継承をMix-inに限って活用しておりこれ自体は問題はないと思うのですが、そもそも一般的にどのようなクラス継承が望ましいのか、もっと一般的な観点からどのようにクラスを作り利用するのが望ましいのか、こういった点が気になるので次のデザインパターン本を読んで勉強したいと思います。
+
+- [Mark Summerfield　著、斎藤 康毅　訳 『実践Python3』](https://www.oreilly.co.jp/books/9784873117393/)
+
+そもそもプログラムはなぜ動くのか、ネットワークはなぜつながるのかもっと低レベルな観点から理解したいので、そのような欲求を満たしてくれる本
+
+- [矢沢 久雄 著『プログラムはなぜ動くのか 第３版　知っておきたいプログラミングの基礎知識』](https://www.nikkeibp.co.jp/atclpubmkt/book/21/S00190/)
+
+- [戸根　勤著 日経NETWORK監修 著 『ネットワークはなぜつながるのか　第２版
+知っておきたいTCP/IP、LAN、光ファイバの基礎知識』](https://www.nikkeibp.co.jp/atclpubmkt/book/07/P83110/)
+
+できる限りセキュリティ面に注意したのですがちゃんと1冊読み込んだわけではないのでいわゆる徳丸本
+
+- [徳丸浩　『体系的に学ぶ 安全なWebアプリケーションの作り方 第2版』](https://www.sbcr.jp/product/4797393163/)
+
+現在この本を読み始めたところです
+
+- [辻真吾･著　下平英寿･編 『Pythonで学ぶアルゴリズムとデータ構造』](https://www.kspub.co.jp/book/detail/5178034.html)
+
+またphp, ruby, goなど他の言語にも果敢に挑みたいと思います。長々と失礼しました。よろしくお願いします。
