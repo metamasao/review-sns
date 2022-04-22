@@ -50,6 +50,21 @@ Test以外ではできる限りDRYに従い、ModelやViewを作るときはFat 
 フォローしてるユーザーの活動
 ![フォローしてるユーザーの活動](picture_for_readme/action.gif)
 
+#### 使用技術
+
+##### Frontend
+- Bootstrap
+- Axios
+
+##### Backend
+- Django
+
+##### PaaS
+- Heroku
+
+##### SaaS
+- Sentry
+
 ### 各アプリの機能や工夫したところ
 
 #### Account
