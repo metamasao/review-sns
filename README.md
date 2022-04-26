@@ -65,6 +65,9 @@ Test coverage: 98%
 ##### Backend
 - Django
 
+##### DB
+- PostgreSQL(開発環境と本番環境で同じデータベースを使用)
+
 ##### PaaS
 - Heroku
 
