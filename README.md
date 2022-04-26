@@ -41,15 +41,19 @@ Test以外ではできる限りDRYに従い、ModelやViewを作るときはFat 
 Test coverage: 98%
 
 本の登録
+
 ![本の登録](picture_for_readme/ajax_book_create.gif)
 
 ユーザーフォロー
+
 ![ユーザーフォロー](picture_for_readme/ajax_user_follow.gif)
 
 いいね
+
 ![いいね](picture_for_readme/ajax_review_like.gif)
 
 フォローしてるユーザーの活動
+
 ![フォローしてるユーザーの活動](picture_for_readme/action.gif)
 
 #### 使用技術
